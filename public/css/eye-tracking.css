@@ -1,0 +1,39 @@
+
+.stimuli {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    -webkit-user-select: none;
+    display: none;
+    top: 30%;
+    left: 50%;
+}
+
+#calibration_dot, #validation_dot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #dd494b;
+    position: fixed;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border: 1px solid #000;
+    -webkit-user-select: none;
+    cursor: pointer;
+    left: 50%;
+    top: 50%;
+}
+
+#calibration_cnt, #validation_cnt {
+    margin-top: 15px;
+    font-family: "Courier New", "Courier New", sans-serif;
+    text-shadow: none;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+

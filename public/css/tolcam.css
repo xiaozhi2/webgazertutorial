@@ -1,0 +1,250 @@
+ * {
+    margin: 0;
+    padding: 0;
+} 
+
+/* @font-face {
+    font-family: rubflama;
+    src: url(rubflama.ttf);
+} */
+
+/* html, body {
+    overflow: hidden;
+    height: 100%;
+    background-color: black;
+    color: #003560 !important;
+    font-size: 1.2em !important;
+    font-family: rubflama !important;
+    text-align: justify !important;
+} */
+
+
+.p {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+}
+
+.ui-mobile label {
+    font-size: 1em !important;
+}
+
+
+#intro_image {
+    width: 70%;
+    position: relative;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+
+/* INSTRUCTION */
+#instruction {
+    width: 50%;
+    min-width: 1000px;
+    border: 1px solid #999;
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, 0%);
+    padding: 40px;
+    padding-bottom: 100px;
+    min-height: 60%;
+    background-color: #efefef;
+    margin-bottom: 200px;
+}
+
+#instruction_logo {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    top: -17px;
+    left: 5%;
+}
+
+.instruction_page {
+    display: none;
+}
+
+.instruction_navigation {
+    position: absolute;
+    bottom: 0;
+    border-top: 1px solid #999;
+    font-size: 2em;
+    font-weight: bolder;
+    min-width: 175px;
+    height: 75px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.instruction_navigation:hover {
+    background-color: #fdfdfd;
+    color: #92c219;
+}
+
+#instruction_back_text, #instruction_continue_text {
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%, -43%);
+    height: 100%;
+    min-width: 100%;
+}
+
+#instruction_back {
+    left: 0;
+    border-right: 1px solid #999;
+}
+
+#instruction_continue {
+    right: 0;
+    border-left: 1px solid #999;
+}
+
+
+h1 {
+    text-align: right;
+    margin-bottom: 30px;
+    color: #92c219;
+    font-size: 2.2em;
+}
+
+/* INSTRUCTION */
+#instruction_message{
+    display: none;
+    width: 60%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 50px;
+    font-size: 3vw;
+    text-align: center;
+    text-shadow: none;
+}
+
+/* EXPERIMENTS */
+#calibration_dot {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: #dd494b;
+    position: fixed;
+    z-index: 999;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    border: 1px solid #000;
+    -webkit-user-select: none;
+    cursor: pointer;
+    left: 50%;
+    top: 50%;
+}
+
+#calibration_cnt {
+    margin-top: 15px;
+    font-family: "Courier New", "Courier New", sans-serif;
+    text-shadow: none;
+    font-size: 0.8em;
+    font-weight: bold;
+}
+
+#heatmap {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 500;
+}
+
+#start_button {
+    height: 50px;
+    width: 300px;
+}
+
+.stimuli {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    -webkit-user-select: none;
+    display: none;
+    top: 30%;
+    left: 50%;
+}
+
+#stimuli_dot {
+    background-color: #dd494b;
+    border-radius: 50%;
+}
+
+#stimuli_bar {
+    width: 25px;
+    height: 150px;
+    background-color: #000;
+}
+
+#stimuli_fixation {
+    font-size: 4em;
+    font-weight: bolder;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    line-height: 0.8em;
+}
+
+#stimuli_prime, #stimuli_target {
+    font-size: 2em;
+    font-weight: bolder;
+}
+
+#stimuli_target {
+    font-size: 1.5em;
+}
+
+#stimuli_img {
+    height: 100%;
+    position: absolute;
+    top: 0;
+    transform: translate(-50%, 0);
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+
+#message {
+    position: fixed;
+    top: 40%;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    width: 40%;
+    border: 1px solid #000;
+    padding: 1%;
+    padding-right: 4%;
+    border-radius: 5px;
+    box-shadow: 5px 5px 1px #acacac;
+    background-color: #fff;
+    z-index: 1000;
+    display: none;
+    background-image: url('../imgs/warning.png');
+    background-repeat: no-repeat;
+    background-position: 98% 10%;
+    min-height: 100px;
+    background-size: 8px 40px;
+}
+
+.ui-datepicker {
+    color: #003560;
+}
+
+.ui-widget-header {
+    background: #92c219;
+    border: #acacac;
+}
+
+
+#instruction_2 a.ui-link {
+    font-weight: normal !important;
+    text-decoration: none;
+}

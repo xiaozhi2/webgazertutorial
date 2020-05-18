@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>webGazerPerp</title>
+    <!-- call css -->
+    <link href="css/eye-tracking.css" rel="stylesheet" type="text/css">
+    </link>
+    <link href="css/jspsych.css" rel="stylesheet" type="text/css">
+    </link>
+    <link href="css/binary-choice.css" rel="stylesheet" type="text/css">
+    </link>
+</head>
+<style>
+
+</style>
+
+<body>
+    <h1 style="text-align: center;"> Welcome to the experiment! </h1>
+    <p style="text-align: center;">TODO: consent form content</p>
+    <div style="text-align:right;">
+        <input type="checkbox" class="checkmark">
+        Please click the button if you agree with the constent form
+        <br><br><br>
+        <button class="goExp">
+            Continue
+        </button>
+    </div>
+    <!-- <button class="goExp">Continue</button> -->
+</body>
+
+<!-- call the library  -->
+<script src="js/lib/jquery-3.5.0.min.js"></script>
+<script src="js/lib/jspsych.js"></script>
+<script src="js/lib/js-combinatrorics-0.5.5.min.js"></script>
+<script src="js/lib/webgazer.js"></script>
+<script src="js/arraryhelper.js"></script>
+<!-- call the plugins -->
+<script src="js/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="js/plugins/jspsych-image-slider-response.js"></script>
+<script src="js/plugins/jspsych-image-keyboard-response.js"></script>
+<script src="js/plugins/binary-choice.js"></script>
+<script src="js/plugins/jspsych-fullscreen.js"></script>
+<script src="js/plugins/eye-tracking.js"></script>
+<!-- call your experiement script -->
+<script src="js/main_task.js"></script>
+<script>
+    const goExp = document.querySelector(".goExp");
+
+    function showAlert() {
+        alert("Please click the button");
+    }
+
+
+    $('body').on('click', '.goExp', function () {
+        showAlert();
+    }).on('click', '.checkmark', function (event) {
+        goExp.addEventListener('click', () => startExperiment());
+        event.stopPropagation();
+    });
+
+</script>
+
+</html>
