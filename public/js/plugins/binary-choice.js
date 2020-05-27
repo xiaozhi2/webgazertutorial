@@ -29,7 +29,6 @@ jsPsych.plugins["binary-choice"] = (function () {
         pretty_name: 'timing_response',
         default: 0,
         description: 'timing_response.'
-
       },
       }  
   };
@@ -143,7 +142,8 @@ jsPsych.plugins["binary-choice"] = (function () {
       }
     };
 
-
+    
+    
 
 
     var end_trial = function (timeout) {
@@ -158,8 +158,7 @@ jsPsych.plugins["binary-choice"] = (function () {
         "rt": response.rt,
         "key_press": response.key,
         "choices": trial.choices,
-        "eye.pos.x": xEye,
-        "eye.pos.y": yEye,
+        "eyeData": JSON.stringify(eyeData) 
       };
       // console.log(trial_data);
       jsPsych.finishTrial(trial_data);
@@ -167,18 +166,21 @@ jsPsych.plugins["binary-choice"] = (function () {
 
     display_stimuli();
     webgazer.resume();
-    var xEye = [];
-    var yEye = [];
+    var eyeData = {history:[]};
     var eye_tracking_interval = setInterval(
       function() {
         var pos = webgazer.getCurrentPrediction();
-        if(pos) {
-          xEye.push(pos.x);
-          yEye.push(pos.y);
+        if (pos) {
+          var relativePosX = pos.x/screen.width;
+          var relativePosY = pos.y/screen.height;
+          eyeData.history.push({
+            'x': pos.x,
+            'y': pos.y,
+            'relative-x': relativePosX,
+            'relative-y': relativePosY,
+          });
         }
       },1);
- 
-
   };
 
   return plugin;

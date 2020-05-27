@@ -3,6 +3,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
    * Helper functions
    ************************************/
   function wait(ms, callback) {
+    
     return setTimeout(callback, ms);
   }
 
@@ -36,7 +37,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
   }
 
   function prepareReferencePoints(num) {
-    var points = arrayHelper.shuffle([
+    var points = utils.shuffle([
       {x: "20%", y: "20%"},
       {x: "50%", y: "20%"},
       {x: "80%", y: "20%"},
@@ -93,7 +94,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
       var trainer;
       wait(500, function() {
-        trainer = setInterval(function() { webgazer.watchListener(cx, cy); }, 10);
+        trainer = setInterval(function() { webgazer.watchListener(cx, cy); }, 5);
       });
 
       var logger = setInterval(function() {
@@ -403,7 +404,8 @@ jsPsych.plugins["eye-tracking"] = (function () {
           console.log('starting validation');
           startValidation(function(validationData) {
             var data = {
-              validationPoints: validationData.points,
+              validationPoints: JSON.stringify( validationData.points),
+             // validationData.points,
               accuracy: computeAccuracy(validationData.points),
               //calibrationHistory: calibrationData.history,
              // validationnHistory: validationData.history,

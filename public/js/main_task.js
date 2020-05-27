@@ -3,9 +3,8 @@
 /**************/
 const nrating = 7; 
 const nchoice = 5; //180 trials , 60 every conditions
-const ntrials = 10;
+const ntrials = 5;
 const fixation_duration = 500;
-
 
 
 /** load all the images, and remember to preload before starting the experiment */
@@ -15,26 +14,16 @@ for (var i = 0; i < nrating; i++) {
 }
 
 /** Prepare */
-var subject_id = jsPsych.randomization.randomID(15);
-var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['conditionA', 'conditionB', 'conditionC'], 1)[0];
+var subject_id = 3412132;
+//jsPsych.randomization.randomID(1);
+//var condition_assignment = jsPsych.randomization.sampleWithoutReplacement(['conditionA', 'conditionB', 'conditionC'], 1)[0];
 jsPsych.data.addProperties({
   subject: subject_id,
-  condition: condition_assignment
+ // condition: condition_assignment
 });
 
 
-function downloadCSV(csv,filename) {
-  var csvFile;
-  var downloadLink;
-  
-  csvFile = new Blob( [csv], {type: "text/csv"});
-  downloadLink = document.createElement("a");
-  downloadLink.download = filename;
-  downloadLink.href = window.URL.createObjectURL(csvFile);
-  downloadLink.style.display = "none";
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-}
+
 
 //preassign a probability string
 
@@ -59,9 +48,9 @@ var get_choice_images = function() {
       multi_choice_temp.push(jsPsych.randomization.shuffle(temp)); // do you want to do diagonal larger rating but another diagonal smaller rating?
   }
   if (multi_choice_temp.length < nchoice) {
-    return arrayHelper.getRandomSample(multi_choice_temp, multi_choice_temp.length);
+    return utils.getRandomSample(multi_choice_temp, multi_choice_temp.length);
   } else {
-    return arrayHelper.getRandomSample(multi_choice_temp, nchoice);
+    return utils.getRandomSample(multi_choice_temp, nchoice);
   }
 };
 
@@ -103,8 +92,8 @@ var inital_eye_calibration = {
       doInit: () => init_flag(),
       doCalibration: true,
       doValidation: true,
-      calibrationDots: 5,
-      calibrationDuration:5,
+      calibrationDots: 10,
+      calibrationDuration:8,
       doValidation: true,
       validationDots: 5,
       validationDuration:3,
@@ -153,7 +142,6 @@ var binary_state_updater =  function() {
 
 
 
-
 /** choices */
 var fixation = {
   type:  "eye-tracking",
@@ -195,11 +183,75 @@ var binary_choice = {
 };
 
 
+var thisStimuli = utils.shuffle(allstimuli);
+console.log(thisStimuli[0]);
 
+
+
+
+var decoy_gamble = {
+  timeline: [
+    fixation,
+    {
+      type: "decoy-gamble",
+     // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
+     stimulus: () => thisStimuli[choice_count], 
+      timing_response: 0,
+      on_finish:() => choice_count++
+    }
+  ],
+  loop_function: () => choice_count < ntrials,
+};
 
 var end = {
   type: "html-keyboard-response",
   stimulus: `<p>You have completed the task. Press any key to exit.</p>`
+};
+
+
+
+
+var on_finish_callback = function() {
+ // var csv = jsPsych.data.get().csv();
+ // var filename = "Webgazeapp.csv";
+  //downloadCSV(csv,filename);
+  jsPsych.data.displayData();
+  $.ajax( {
+    type: "POST",
+    url: "/experiment-data",
+    data:JSON.stringify(jsPsych.data.get().values()),
+    contentType: "application/json"
+  })
+  .done(function() {
+    alert("your data has been saved!")
+  })
+  .fail(function() {
+    alert("problem occured while writing data to box.");
+    var csv = jsPsych.data.get().csv();
+    var filename = jsPsych.data.get().values()[0].subject_id + ".csv";
+    utils.downloadCSV(csv,filename);
+  })
+}
+
+
+function startExperiment() {
+  jsPsych.init({
+    timeline: [
+       fullscreen,
+     // instructions,
+      inital_eye_calibration,
+      choiceInstruction,
+     // binary_choice,
+     decoy_gamble,
+      end
+    ],
+    preload_images:[exp_images,instuct_img],
+    on_finish: () => on_finish_callback()
+    //on_finish: saveData,
+
+   //on_finish: () => jsPsych.data.displayData('csv'),
+   // on_close: () => save_data_to_server(jsPsych.data.get().json())
+  });
 };
 
 
@@ -231,33 +283,4 @@ function saveData() {
   };
   xhr.send(jsPsych.data.get().json());
 }
-
-
-var on_finish_callback = function() {
-  var csv = jsPsych.data.get().csv();
-  var filename = "Webgazeapp.csv";
-  downloadCSV(csv,filename);
-  jsPsych.data.displayData();
-
-}
-
-
-function startExperiment() {
-  jsPsych.init({
-    timeline: [
-       fullscreen,
-      //instructions,
-      inital_eye_calibration,
-      choiceInstruction,
-      binary_choice,
-      end
-    ],
-    preload_images:[exp_images,instuct_img],
-    on_finish: () => on_finish_callback()
-    //on_finish: saveData,
-
-   // on_finish: () => jsPsych.data.displayData('csv'),
-   // on_close: () => save_data_to_server(jsPsych.data.get().json())
-  });
-};
 
