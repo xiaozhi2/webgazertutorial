@@ -424,7 +424,7 @@ var decoy_gamble2 = {
 
 var end = {
   type: "html-keyboard-response",
-  stimulus: `<p>You have completed the task. Press any key to exit.</p>`
+  stimulus: `<p>You have completed the task.  The webcam will be closed when you close our browser. Press any key to exit.</p>`
 };
 
 
