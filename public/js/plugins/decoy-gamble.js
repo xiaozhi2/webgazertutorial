@@ -26,8 +26,13 @@ jsPsych.plugins["decoy-gamble"] = (function() {
             pretty_name: 'timing_response',
             default: 0,
             description: 'Timing response.'
+          },
+          doEyeTracking: {
+            type: jsPsych.plugins.parameterType.BOOL,
+            pretty_name: 'eye-tracking',
+            default: false,
+            description: 'Whether to do the eye tracking during this trial.'
           }
-
           }    
       } 
   
@@ -70,7 +75,7 @@ jsPsych.plugins["decoy-gamble"] = (function() {
         
 		//Remove the margins and padding of the canvas
 		gambleCanvas.style.margin = 0;
-        gambleCanvas.style.padding = 0;	
+    gambleCanvas.style.padding = 0;	
         
         //Get the context of the canvas so that it can be painted on.
 
@@ -183,18 +188,20 @@ jsPsych.plugins["decoy-gamble"] = (function() {
     };
     
 
-    var end_trial = function (timeout) {
-
-      webgazer.pause();
-      clearInterval(eye_tracking_interval);
+    var end_trial = function () {
+      if(trial.doEyeTracking) {
+        webgazer.pause();
+        clearInterval(eye_tracking_interval);
+      }
+     
 
 
       // data saving
       var trial_data = {
         "rt": response.rt,
         "key_press": response.key,
-        "choices": trial.choices,
-        "stimulus":JSON.stringify(trial.stimulus),
+        "choices": JSON.stringify(trial.choices),
+        "stimulus":trial.stimulus.index,
         "eyeData": JSON.stringify(eyeData) 
       };
       	//Remove the canvas as the child of the display_element element
@@ -210,25 +217,36 @@ jsPsych.plugins["decoy-gamble"] = (function() {
       jsPsych.finishTrial(trial_data);
     };
 
-    display_stimuli();
-    webgazer.resume();
     var eyeData = {history:[]};
+    display_stimuli();
+    if(trial.doEyeTracking) {
+      webgazer.resume();
+    webgazer.showVideo(false);
+    webgazer.showFaceOverlay(false);
+    webgazer.showFaceFeedbackBox(false);
+    var starttime = performance.now();
     var eye_tracking_interval = setInterval(
       function() {
         var pos = webgazer.getCurrentPrediction();
         if (pos) {
+
           var relativePosX = pos.x/screen.width ;
           var relativePosY = pos.y/screen.height;
+          var relativePosX2= pos.x/innerWidth ;
+          var relativePosY2 = pos.y/innerHeight;
           eyeData.history.push({
-            'x': pos.x,
-            'y': pos.y,
+           // 'x': pos.x,
+          //  'y': pos.y,
             'relative-x': relativePosX,
             'relative-y': relativePosY,
+            'relative-x2': relativePosX2,
+            'relative-y2': relativePosY2,
+            'elapse-time': performance.now() - starttime
           });
         }
       },1);
-  
-      
+    }
+     
     };
   
     return plugin;

@@ -38,18 +38,30 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
   function prepareReferencePoints(num) {
     var points = utils.shuffle([
+      // {x: "20%", y: "20%"},
+      // {x: "50%", y: "20%"},
+      // {x: "80%", y: "20%"},
+      // {x: "20%", y: "50%"},
+      // {x: "80%", y: "50%"},
+      // {x: "20%", y: "80%"},
+      // {x: "50%", y: "80%"},
+      // {x: "80%", y: "80%"},
+      // {x: "35%", y: "35%"},
+      // {x: "65%", y: "35%"},
+      // {x: "35%", y: "65%"},
+      // {x: "65%", y: "65%"}
       {x: "20%", y: "20%"},
-      {x: "50%", y: "20%"},
-      {x: "80%", y: "20%"},
-      {x: "20%", y: "50%"},
-      {x: "80%", y: "50%"},
-      {x: "20%", y: "80%"},
-      {x: "50%", y: "80%"},
-      {x: "80%", y: "80%"},
-      {x: "35%", y: "35%"},
+      {x: "45%", y: "5%"},
+      {x: "45%", y: "35%"},
+      {x: "15%", y: "50%"},
+      {x: "15%", y: "60%"},
+      {x: "15%", y: "90%"},
+      {x: "75%", y: "60%"},
+      {x: "75%", y: "90%"},
       {x: "65%", y: "35%"},
       {x: "35%", y: "65%"},
-      {x: "65%", y: "65%"}
+      {x: "50%", y: "80%"},
+      {x: "80%", y: "50%"},
     ]);
     points.length = num;
     points[0] = {x: "50%", y: "50%"}; // fix the last point (points are popped in reverse order)
@@ -63,7 +75,8 @@ jsPsych.plugins["eye-tracking"] = (function () {
     /** Setup variables */
     var numPoints = options.numPoints || 6;
     var duration = options.duration || 10;
-    var showPoint = options.showPoint || true;
+    var showPoint = options.showPoint || false;
+    var doVideo = options.doVideo || true;
 
     var points = prepareReferencePoints(numPoints);
     var data = { history: [] };
@@ -77,6 +90,9 @@ jsPsych.plugins["eye-tracking"] = (function () {
     /** Setup webgazer */
     webgazer.clearData();
     webgazer.showPredictionPoints(showPoint);
+    webgazer.showVideo(doVideo);
+    webgazer.showFaceOverlay(doVideo);
+    webgazer.showFaceFeedbackBox(doVideo);
 
     /** Helper functions */
     function calibrationLoop(callback) {
@@ -129,7 +145,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
       calibration_dot.show();
       calibrationLoop(function() {
         displayElement.innerHTML = '';
-        webgazer.showPredictionPoints(false);
+        webgazer.showPredictionPoints(showPoint);
         callback(data);
       });
     });
@@ -142,9 +158,10 @@ jsPsych.plugins["eye-tracking"] = (function () {
     /** Setup variables */
     var numPoints = options.numPoints || 6;
     var duration = options.duration || 10;
-    var showPoint = options.showPoint || true;
+    var showPoint = options.showPoint || false;
     var tol = options.tol || 200;
     var threshold = options.threshold || 0.7;
+    var doVideo = options.doVideo || false;
 
     var points = prepareReferencePoints(numPoints);
     var success_color = 'green';
@@ -160,7 +177,10 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
     /** Setup webgazer */
     webgazer.clearData();
-    webgazer.showPredictionPoints(showPoint);
+    webgazer.showPredictionPoints(false);
+    webgazer.showVideo(doVideo);
+    webgazer.showFaceOverlay(doVideo);
+    webgazer.showFaceFeedbackBox(doVideo);
 
     function validationLoop(callback) {
         if (points.length == 0) {
@@ -239,7 +259,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
         validation_dot.show();
         validationLoop(function() {
           displayElement.innerHTML = '';
-          webgazer.showPredictionPoints(false);
+          webgazer.showPredictionPoints(showPoint);
           callback(data);
         });
       });
@@ -266,7 +286,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
       },
       showPoint: {
         type: jsPsych.plugins.parameterType.BOOL,
-        default: true,
+        default: false,
         description: 'whether show the predcition point or not'
       },
       doCalibration: {
@@ -323,7 +343,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
     function startWebgazer(callback) {
       if (trial.doInit) {
-        display_element.innerHTML = '<div>Eye-tracking is starting, please press the spacebar to continue</div>';
+        display_element.innerHTML = '<div>Webcam is ready, please press the spacebar to continue</div>';
         //begin webgazer and also set up webgazer parameter
         webgazer.begin(function (err) {
           if (err) {
@@ -331,7 +351,10 @@ jsPsych.plugins["eye-tracking"] = (function () {
             return;
           }
           //webgazer.setRegression('ridge');
-          webgazer.params.showVideo = trial.doVideo;
+          webgazer.setRegression('threadedRidge');
+          //webgazer.params.showVideo = trial.doVideo;
+
+       //   webgazer.params.showFaceOverlay = false;
           var onkeyup = function(e) {
             if (e.keyCode == 32) {
               removeEventListener('keyup', onkeyup);
@@ -369,7 +392,8 @@ jsPsych.plugins["eye-tracking"] = (function () {
           duration: trial.validationDuration,
           showPoint: trial.showPoint,
           tol: trial.validationTol,
-          threshold: trial.validationThreshold
+          threshold: trial.validationThreshold,
+          //doVideo: trial.doValidationVideo
         }
         //begin validation 
         validate(display_element, options, function (data) {

@@ -1,54 +1,75 @@
-json2csv = function(objArray){
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var line = '';
-    var result = '';
-    var columns = [];
+// json2csv = function(objArray){
+//     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+//     var line = '';
+//     var result = '';
+//     var columns = [];
 
-    var i = 0;
-    for (var j = 0; j < array.length; j++) {
-        for (var key in array[j]) {
-            var keyString = key + "";
-            keyString = '"' + keyString.replace(/"/g, '""') + '",';
-            if (!columns.includes(key)) {
-                columns[i] = key;
-                line += keyString;
-                i++;
-            }
-        }
-    }
+//     var i = 0;
+//     for (var j = 0; j < array.length; j++) {
+//         for (var key in array[j]) {
+//             var keyString = key + "";
+//             keyString = '"' + keyString.replace(/"/g, '""') + '",';
+//             if (!columns.includes(key)) {
+//                 columns[i] = key;
+//                 line += keyString;
+//                 i++;
+//             }
+//         }
+//     }
 
-    line = line.slice(0, -1);
-    result += line + '\r\n';
+//     line = line.slice(0, -1);
+//     result += line + '\r\n';
 
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-        for (var j = 0; j < columns.length; j++) {
-            var value = (typeof array[i][columns[j]] === 'undefined') ? '' : array[i][columns[j]];
-            var valueString = value + "";
-            line += '"' + valueString.replace(/"/g, '""') + '",';
-        }
+//     for (var i = 0; i < array.length; i++) {
+//         var line = '';
+//         for (var j = 0; j < columns.length; j++) {
+//             var value = (typeof array[i][columns[j]] === 'undefined') ? '' : array[i][columns[j]];
+//             var valueString = value + "";
+//             line += '"' + valueString.replace(/"/g, '""') + '",';////change, to ;
+//         }
 
-        line = line.slice(0, -1);
-        result += line + '\r\n';
-    }
+//         line = line.slice(0, -1);
+//         result += line + '\r\n';
+//     }
 
+//     return result;
+
+// };
+
+
+
+json2csv = function(objects) {
+  //  var splitter = ',';
+    var keys = ['subject', 'rt','success', 'trial_type','trial_index','time_elapsed','interaction','stimulus','key_press','choices','eyeData'];
+    // var result = keys.join(splitter) + '\n';
+    // for (var obj in objects) {
+    //       result += keys.map(k => obj[k]).join(splitter) + '\n';
+    // }
+     var result = keys.join(";") + "\n";
+     objects.forEach(function(obj){
+        result += keys.map(k => obj[k]).join(";") + "\n";
+     });
     return result;
-
-};
-
+}
 
 
 
 /// load modules 
-const  express = require("express");
+var  express = require("express");
 // instanitate the app
 var app = express();
 
 
+//generate unique id
+//var uuid = require('uuid');
+ //folder id : uuid 
+//var folderName=uuid.v1;
+//subject id: uuid-trialnumber.csv
+
 //const BoxSDK = require("box-node-sdk");
 //const fs = require('fs');
 const Dropbox = require("dropbox").Dropbox;
-const fetch = require("node-fetch"); // 
+const fetch = require("node-fetch"); 
 const body_parser = require("body-parser");
 //require("dotenv").config();
 
@@ -88,44 +109,55 @@ const dbx = new Dropbox( {
     fetch
 });
 
+
+
 saveDropbox = function(content,filename) {
+    dbx.filesCreateFolder({
+        path:"/" +  foldername,
+        autorename: false
+    });
     dbx.filesUpload({
-        path: "/" + filename,
+        path: "/" + foldername + "/" + filename,
         contents: content
     })
 };
 
 
 app.set('port', (process.env.PORT || 3000));
-// app.use(function(req, res, next) {
-//     res.setHeader("Content-Security-Policy", "default-src 'self'");
-//     return next();
-// });
 
 // static
 app.use(express.static(__dirname + '/public'));
-app.use(body_parser.json());
+app.use(body_parser.json({limit:"50mb"}));
 
 
 
 app.get("/", function(request,response) {
     response.render("index.html");
 })
-app.post("/experiment-data",function(request,response)  {
+app.post("/",function(request,response)  {
     //convert json to csv
-    DATA_CSV = json2csv(request.body);
-    //get filename from data;
-
-    var row = DATA_CSV.split("\n");
+    request.setTimeout(0);
+   // DATA_CSV = json2csv(request.body);
+   data = request.body; 
+   console.log(typeof(data));
+    //get filename from data;jsPsych.data.get().values()
+   // var row = DATA_CSV.split("\n");
+   // Id_index = row[0].split(";").indexOf('subject');
+   id=data[0].subject;
+   // id = row[1].split(",")[Id_index];
+    //console.log(row[1].split(";"));
+   // console.log(id)
+   //console.log(id);
+    id = id.replace(/'/g, "");
     var currentdate = new Date();
-    
+   // foldername=Number(currentdate);
     //row[0].split(",").indexOf("subject");//which
-    filename = Number(currentdate) + ".csv";
-    saveDropbox(DATA_CSV,filename);
+    filename = Number(currentdate) + ".json";
+    foldername = id;
+    data = JSON.stringify(data);
+    saveDropbox(data,filename);
 
     //save the data
-
-
 }
 );
 
@@ -136,6 +168,6 @@ app.listen(app.get('port'), function() {
 });
 
 
-var currentdate = new Date(); 
-console.log(Number(currentdate));
+// var currentdate = new Date(); 
+// console.log(Number(currentdate));
 

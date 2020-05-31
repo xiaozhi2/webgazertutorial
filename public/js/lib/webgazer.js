@@ -9981,10 +9981,16 @@ var mosseFilterResponses = function() {
 
         this.dataClicks = new webgazer.util.DataWindow(dataWindow);
         this.dataTrail = new webgazer.util.DataWindow(dataWindow);
-
-        this.worker = new Worker('ridgeWorker.js');
+        // try {
+        //   this.worker = new Worker('js/lib/webgazer-worker/ridgeWorker.js');
+        // } catch (error) {
+        //   console.log(error);
+        // }
+        this.worker = new Worker('js/lib/webgazer-worker/ridgeWorker.js');
         this.worker.onerror = function(err) { console.log(err.message); };
         this.worker.onmessage = function(evt){
+          //console.log("message");
+         // console.log(evt.data);
           weights.X = evt.data.X;
           weights.Y = evt.data.Y;
         };
@@ -10013,7 +10019,7 @@ var mosseFilterResponses = function() {
      * @returns {Object}
      */
     webgazer.reg.RidgeRegThreaded.prototype.predict = function(eyesObj) {
-        console.log('LOGGING..');
+        //console.log('LOGGING..');
         if (!eyesObj) {
             return null;
         }
@@ -10030,9 +10036,9 @@ var mosseFilterResponses = function() {
         predictedX = Math.floor(predictedX);
         predictedY = Math.floor(predictedY);
 
-        console.log('PredicedX');
-        console.log(predictedX);
-        console.log(predictedY);
+        //console.log('PredicedX');
+        //console.log(predictedX);
+        //console.log(predictedY);
 
         return {
             x: predictedX,
@@ -10478,6 +10484,7 @@ function store_points(x, y, k) {
     var paused = false;
     //registered callback for loop
     var nopCallback = function(data, time) {};
+    //console.log(time)
     var callback = nopCallback;
 
     //Types that regression systems should handle
@@ -10760,6 +10767,7 @@ function store_points(x, y, k) {
                     }
                 }
                 // GazeDot
+               // console.log(pred.x +" "+ pred.y);
                 gazeDot.style.transform = 'translate3d(' + pred.x + 'px,' + pred.y + 'px,0)';
             }
 
