@@ -145,9 +145,6 @@ app.post("/",function(request,response)  {
    // Id_index = row[0].split(";").indexOf('subject');
    id=data[0].subject;
    // id = row[1].split(",")[Id_index];
-    //console.log(row[1].split(";"));
-   // console.log(id)
-   //console.log(id);
     id = id.replace(/'/g, "");
     var currentdate = new Date();
    // foldername=Number(currentdate);
@@ -156,7 +153,6 @@ app.post("/",function(request,response)  {
     foldername = id;
     data = JSON.stringify(data);
     saveDropbox(data,filename);
-
     //save the data
 }
 );

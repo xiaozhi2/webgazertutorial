@@ -348,7 +348,7 @@ var binary_choice = {
 
 
 var thisStimuli = utils.shuffle(allstimuli);
-console.log(thisStimuli[0]);
+
 
 
 
@@ -480,7 +480,6 @@ function startExperiment() {
     ],
     on_trial_finish: function() {
       trialcounter = jsPsych.data.get().count();
-      console.log(JSON.parse(jsPsych.data.get().json()));
       if (trialcounter ==20) {
         on_finish_callback();
         jsPsych.data.reset();
