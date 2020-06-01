@@ -75,8 +75,8 @@ var gambleInstruction = {
                                         <br><br/>
            Each round, you will see three gambles. For example, you might see the following choice: <br/>
                              <img height="500px" width="800px" src="${instruct_img[1]}"><br/>
-                             Each square represents a choice. The column bar in each square indicates the probability of getting the corresponding amount below.  <br/>
-                             So, if you decide to choose the lower left choice, you would have a 70% chance to win $10 extra dollars at the end of the experiment.</br>
+                             Each square represents an option. The column bar in each square indicates the probability of getting the corresponding amount below.  <br/>
+                             So, if you decide to choose the lower left option, you would have a 70% chance to win $10 extra dollars at the end of the experiment.</br>
                              <b><font color = 'red'>NOTE</font></b>: The probability will  <font color='green'>NOT</font> be visible in the actual task. </br>
                                         <br><br/>
                             If you are ready, please press the  <b>SPACE BAR</b> to begin.</div>`,
