@@ -7,7 +7,7 @@ const nprac = 2;
 const fixation_duration = 500;
 const nImageInst = 4;
 
-/** load all the images, and remember to preload before starting the experiment */
+/** load all the images, and remember to preload before starting the egitxperiment */
 var instruct_img = [];
 for( var i = 0 ; i < nImageInst; i++) {
   instruct_img.push('../img/instruct' + i + '.png');
