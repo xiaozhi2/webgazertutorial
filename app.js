@@ -139,7 +139,7 @@ app.post("/",function(request,response)  {
     request.setTimeout(0);
    // DATA_CSV = json2csv(request.body);
    data = request.body; 
-   console.log(typeof(data));
+   //console.log(typeof(data));
     //get filename from data;jsPsych.data.get().values()
    // var row = DATA_CSV.split("\n");
    // Id_index = row[0].split(";").indexOf('subject');

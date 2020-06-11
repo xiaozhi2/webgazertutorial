@@ -54,7 +54,7 @@ jsPsych.plugins.fullscreen = (function() {
       endTrial();
     } else {
       if(trial.fullscreen_mode){
-        display_element.innerHTML = trial.message + '<button id="jspsych-fullscreen-btn" class="jspsych-btn">'+trial.button_label+'</button>';
+        display_element.innerHTML = trial.message + '<br><br/><br><br/>'  +'<button id="jspsych-fullscreen-btn" class="jspsych-btn">'+trial.button_label+'</button>';
         var listener = display_element.querySelector('#jspsych-fullscreen-btn').addEventListener('click', function() {
           var element = document.documentElement;
           if (element.requestFullscreen) {

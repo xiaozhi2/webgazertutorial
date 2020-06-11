@@ -180,7 +180,7 @@ jsPsych.plugins["binary-choice"] = (function () {
             'relative-y': relativePosY,
           });
         }
-      },1);
+      },50);
   };
 
   return plugin;

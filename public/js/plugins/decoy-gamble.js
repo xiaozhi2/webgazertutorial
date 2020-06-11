@@ -39,12 +39,23 @@ jsPsych.plugins["decoy-gamble"] = (function() {
     plugin.trial = function(display_element, trial) {
         //Note on '||' logical operator: If the first option is 'undefined', it evalutes to 'false' and the second option is returned as the assignment
         var setTimeoutHandlers = [];
-        trial.choice1_o = trial.stimulus.out1 ||[];
-        trial.choice1_p = trial.stimulus.prob1 ||[];
-        trial.choice2_o = trial.stimulus.out2 ||[];
-        trial.choice2_p = trial.stimulus.prob2 ||[];
-        trial.choice3_o = trial.stimulus.out3 ||[];
-        trial.choice3_p = trial.stimulus.prob3||[];
+  
+        thisTrial = utils.shuffle([[ trial.stimulus.oA_w, trial.stimulus.oA_h], 
+                   [ trial.stimulus.oB_w,trial.stimulus.oB_h], 
+                   [trial.stimulus.oC_w, trial.stimulus.oC_h]]);
+         
+        trial.maxArea_width = trial.stimulus.correct_w ||[];
+        trial.maxArea_height = trial.stimulus.correct_h ||[];
+        
+        trial.option1_w = thisTrial[0][0] ||[];
+        trial.option1_h = thisTrial[0][1] ||[];
+        trial.option2_w = thisTrial[1][0] ||[];
+        trial.option2_h = thisTrial[1][1] ||[];
+        trial.option3_w = thisTrial[2][0] ||[];
+        trial.option3_h = thisTrial[2][1] ||[];
+
+        trial.correct_area = trial.maxArea_width * trial.maxArea_height; 
+       
         var response = {
           rt: -1,
           key: -1
@@ -84,40 +95,29 @@ jsPsych.plugins["decoy-gamble"] = (function() {
 
         var draw = function() {
              var ctx = gambleCanvas.getContext("2d");
+
+
+
+             ////lower left: 37
              ctx.beginPath();
-             ctx.strokeStyle = "grey";
-             ctx.rect((7/16)*canvasWidth, (1/64)*canvasHeight,(1/8)*canvasWidth,(1/16)*canvasHeight);
-             ctx.rect((6/16)*canvasWidth, (1/256)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
              ctx.fillStyle = "grey";
-             ctx.fillRect((7/16)*canvasWidth, (1/64)*canvasHeight,(1/8)*canvasWidth*trial.choice1_p,(1/16)*canvasHeight);
+             ctx.fillRect((3/16-6/64)*canvasWidth, (1/64 +39/64)*canvasHeight,trial.option1_w*2.5,trial.option1_h*2.5);
              ctx.stroke();
-             ctx.font = "35px Comic Sans MS";
-             ctx.fillText("$" + trial.choice1_o,(15/32)*canvasWidth,(23/64)*canvasHeight);
-             ctx.strokeStyle = "grey";
 
-
+              ////upper middle: 38
              ctx.beginPath();
-             ctx.strokeStyle = "grey";
-             ctx.rect((3/16-6/64)*canvasWidth, (1/64 +39/64)*canvasHeight,(1/8)*canvasWidth,(1/16)*canvasHeight);
-             ctx.rect((2/16-6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
              ctx.fillStyle = "grey";
-             ctx.fillRect((3/16-6/64)*canvasWidth, (1/64 + 39/64)*canvasHeight,(1/8)*canvasWidth*trial.choice2_p,(1/16)*canvasHeight);
+             ctx.fillRect((7/16)*canvasWidth, (1/64)*canvasHeight,trial.option2_w*2.5 ,trial.option2_h*2.5);
              ctx.stroke();
-             ctx.font = "35px Comic Sans MS";
-             ctx.fillText("$" + trial.choice2_o,(7/32-6/64)*canvasWidth,(23/64 +39/64)*canvasHeight);
-             ctx.strokeStyle = "grey";
 
 
+
+              ///lower right: 39
              ctx.beginPath();
-             ctx.strokeStyle = "grey";
-             ctx.rect((3/16 + 1/2 + 6/64)*canvasWidth, (1/64 +39/64)*canvasHeight,(1/8)*canvasWidth,(1/16)*canvasHeight);
-             ctx.rect((2/16 + 1/2+ 6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
              ctx.fillStyle = "grey";
-             ctx.fillRect((3/16 + 1/2+ 6/64)*canvasWidth, (1/64 +39/64)*canvasHeight,(1/8)*canvasWidth*trial.choice3_p,(1/16)*canvasHeight);
+             ctx.fillRect((3/16 + 1/2 + 6/64)*canvasWidth, (1/64 +39/64)*canvasHeight,trial.option3_w*2.5, trial.option3_h*2.5);
              ctx.stroke();
-             ctx.font = "35px Comic Sans MS";
-             ctx.fillText("$" + trial.choice3_o,(7/32 +1/2+ 6/64)*canvasWidth,(23/64 +39/64)*canvasHeight);
-             ctx.strokeStyle = "grey";
+       
         };
 
         var display_selection = function () {
@@ -125,18 +125,23 @@ jsPsych.plugins["decoy-gamble"] = (function() {
           if (response.key == 37) {
             ctx.beginPath();
             ctx.strokeStyle = "red";
-            ctx.rect((2/16-6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+          ctx.rect((2/16-6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+        // ctx.rect((2/16-6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,trial.option1_w*3 + 1/16*canvasWidth,trial.option1_h*3 + (1/64 - 1/256)*canvasHeight );
             ctx.stroke();
           } if (response.key == 38) {
          
             ctx.beginPath();
             ctx.strokeStyle = "red";
-            ctx.rect((6/16)*canvasWidth, (1/256)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+          ctx.rect((6/16)*canvasWidth, (1/256)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+
+           // ctx.rect((6/16)*canvasWidth, (1/256)*canvasHeight,trial.option2_w*3 + 1/16*canvasWidth, trial.option2_h*3 + (1/64 - 1/256)*canvasHeight);
+            
             ctx.stroke();
           } if (response.key == 39){
             ctx.beginPath();
             ctx.strokeStyle = "red";
-            ctx.rect((2/16 + 1/2+ 6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+           ctx.rect((2/16 + 1/2+ 6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,(16/64)*canvasWidth,(24/64)*canvasHeight);
+         // ctx.rect((2/16 + 1/2+ 6/64)*canvasWidth, (1/256 +39/64)*canvasHeight,trial.option3_w*3 + 1/16*canvasWidth, trial.option3_h*3+ 1/128*canvasHeight);
             ctx.stroke();
           }
         };
@@ -153,6 +158,9 @@ jsPsych.plugins["decoy-gamble"] = (function() {
             }
           };
 
+          var correct = 0;
+          var chosen_area; 
+
           var start_response_listener = function () {
             if (trial.choices != jsPsych.NO_KEYS) {
               keyboardListener = jsPsych.pluginAPI.getKeyboardResponse({
@@ -164,6 +172,20 @@ jsPsych.plugins["decoy-gamble"] = (function() {
                   kill_listeners();
                   kill_timers();
                   response = info;
+                  if (response.key==37) { 
+                    trial.decision_width = thisTrial[0][0];
+                    trial.deicison_height = thisTrial[0][1];
+                  }  if (response.key==38) { 
+                    trial.decision_width = thisTrial[1][0];
+                    trial.deicison_height = thisTrial[1][1];
+                  } if (response.key==39) { 
+                    trial.decision_width = thisTrial[2][0];
+                    trial.deicison_height = thisTrial[2][1];
+                  }
+                  chosen_area = trial.decision_width*trial.deicison_height;
+                  if (chosen_area == trial.correct_area) {
+                    correct = 1;
+                  } 
                   display_selection();
                   setTimeout(() => end_trial(false), 500);
                 },
@@ -196,12 +218,16 @@ jsPsych.plugins["decoy-gamble"] = (function() {
      
 
 
+
       // data saving
       var trial_data = {
         "rt": response.rt,
         "key_press": response.key,
         "choices": JSON.stringify(trial.choices),
         "stimulus":trial.stimulus.index,
+        "stimulus_label": trial.stimulus.label,
+        "chosen_area": chosen_area,
+        "correct":   correct  ,
         "eyeData": JSON.stringify(eyeData) 
       };
       	//Remove the canvas as the child of the display_element element

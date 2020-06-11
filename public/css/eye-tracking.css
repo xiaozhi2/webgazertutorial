@@ -47,3 +47,11 @@
     
 }
 
+.try_dot {
+    height: 280px;
+    width: 280px;
+    background-color: #bbb;
+     border-radius: 50%;
+    display: inline-block;
+  }
+
