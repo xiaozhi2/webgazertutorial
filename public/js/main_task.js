@@ -423,7 +423,7 @@ var on_finish_callback = function() {
  // var csv = jsPsych.data.get().csv();
  // var filename = "Webgazeapp.csv";
   //downloadCSV(csv,filename);
-  jsPsych.data.displayData();
+ // jsPsych.data.displayData();
  //jsPsych.data.get().addToAll({subject: subject_id});
   jsPsych.data.addProperties({
     subject: subject_id,
