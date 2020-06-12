@@ -89,12 +89,6 @@ const body_parser = require("body-parser");
 //var client = sdk.getBasicClient('JKfo9lWcymRSQVTVZcjm97eAybxHzvNr');
 
  //var folderID = '0';
-// Get your own user object from the Box API
-// All client methods return a promise that resolves to the results of the API call,
-// or rejects when an error occurs
-//client.users.get(client.CURRENT_USER_ID)
-   // .then(user => console.log('Hello', user.name, '!'))
-  //  .catch(err => console.log('Got an error!', err));
 
 
 	
@@ -111,16 +105,52 @@ const dbx = new Dropbox( {
 
 
 
-saveDropbox = function(content,filename) {
-    dbx.filesCreateFolder({
+//  saveDropbox = function(content,filename,foldername ) {
+//      dbx.filesCreateFolder({
+//          path:"/" +  foldername,
+//          autorename: false
+//     }),
+//      dbx.filesUpload({
+//          path: "/" + foldername + "/" + filename,
+//         contents: content
+//     }).catch();
+//  };
+
+
+// saveDropbox = function(content, filename, foldername) {
+//     return dbx.filesCreateFolder({
+//         path:"/" +  foldername,
+//         autorename: false
+//     }).then(()=> {
+//         return dbx.filesUpload({
+//             path: "/" + foldername + "/" + filename,
+//             contents: content
+//         });
+//     }).catch(err => console.log(err));
+// };
+// ...
+
+saveDropbox = function(content, filename, foldername) {
+    return dbx.filesGetMetadata({
         path:"/" +  foldername,
-        autorename: false
+    }).catch(err => {
+  //      console.log(err['error']['path'])
+        if (err.error.error.path['.tag'] == 'not_found') {
+            return dbx.filesCreateFolder({
+                path:"/" +  foldername,
+                autorename: false,
+            });
+        } else {
+            throw err;
+        }
+    }).then(()=> {
+        return dbx.filesUpload({
+            path: "/" + foldername + "/" + filename,
+            contents: content
+        });
     });
-    dbx.filesUpload({
-        path: "/" + foldername + "/" + filename,
-        contents: content
-    })
 };
+
 
 
 app.set('port', (process.env.PORT || 3000));
@@ -139,21 +169,17 @@ app.post("/",function(request,response)  {
     request.setTimeout(0);
    // DATA_CSV = json2csv(request.body);
    data = request.body; 
-   //console.log(typeof(data));
-    //get filename from data;jsPsych.data.get().values()
-   // var row = DATA_CSV.split("\n");
-   // Id_index = row[0].split(";").indexOf('subject');
    id=data[0].subject;
    // id = row[1].split(",")[Id_index];
     id = id.replace(/'/g, "");
     var currentdate = new Date();
-   // foldername=Number(currentdate);
-    //row[0].split(",").indexOf("subject");//which
     filename = Number(currentdate) + ".json";
     foldername = id;
     data = JSON.stringify(data);
-    saveDropbox(data,filename);
-    //save the data
+  //saveDropbox(data,filename,foldername);
+ saveDropbox(data, filename, foldername).catch(err => console.log(err))
+   
+   //save the data
 }
 );
 

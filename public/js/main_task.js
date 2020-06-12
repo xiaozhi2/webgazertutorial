@@ -1,7 +1,6 @@
 /**************/
 /** Constants */
 /**************/
-const nrating = 7; 
 const ntrials = 70;
 const nprac = 2;
 const fixation_duration = 500;
@@ -29,7 +28,7 @@ var subject_id = jsPsych.randomization.randomID(15);
 
 
 /** full screen */
-var fullscreen = {
+var fullscreenEnter = {
   type: 'fullscreen',
   message: `<div> Before we begin, please close any unnecessary programs or applications on your computer. <br/>
   This will help make the study run more smoothly.  <br/>
@@ -188,10 +187,10 @@ var inital_eye_calibration = {
       doInit: () => init_flag(),
       doCalibration: true,
       doValidation: true,
-      calibrationDots: 12,
-      calibrationDuration:5,
+      calibrationDots: 12, // change to 12
+      calibrationDuration:5, //change to 5
       doValidation: true,
-      validationDots: 12,
+      validationDots: 12,  //change to 12
       validationDuration:3,
       validationTol: validationTols[calibrationAttempt],
      // showPoint: true,
@@ -244,6 +243,7 @@ var thisPrac = practice_stimuli;
 
 
 var practice_choice_count = 0;
+var correct_response_counter = 0;
 var practice_choice = {
   timeline: [
     fixation1,
@@ -253,7 +253,8 @@ var practice_choice = {
      stimulus: () => thisPrac[practice_choice_count],
       timing_response: 0,
       doEyeTracking: false,
-      on_finish: function() {
+      on_finish: function(data) {
+        correct_response_counter = correct_response_counter + data.correct,
         practice_choice_count++,
         document.body.style.cursor = 'none'
       }
@@ -303,7 +304,7 @@ function binary_choice_state_logger(finish_data_accuracy) {
       binary_choice_states = {
         //set the default 
         doCalibration: true,
-        calibrationDots: 12,
+        calibrationDots: 1, ///change to 12
         dovalidation: false,
         }
         validate_counter = 0;
@@ -344,8 +345,11 @@ var decoy_gamble1 = {
      // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
      stimulus: () => thisStimuli[choice_count], 
       timing_response: 0,
-      doEyeTracking:false,
-      on_finish:() => choice_count++
+      doEyeTracking:true,
+      on_finish: function(data){
+          correct_response_counter = correct_response_counter + data.correct,
+          choice_count++
+      }
     }
   ],
   loop_function: () => choice_count < 35,
@@ -403,34 +407,38 @@ var decoy_gamble2 = {
      stimulus: () => thisStimuli[choice_count], 
       timing_response: 0,
       doEyeTracking:true,
-      on_finish:() => choice_count++
+      on_finish: function(data){
+        correct_response_counter = correct_response_counter + data.correct,
+        choice_count++
+    }
     }
   ],
   loop_function: () => choice_count < ntrials,
 };
 
 
-
+var correct_rate = 0;
 var end = {
   type: "html-keyboard-response",
-  stimulus: `<p>You have completed the task. The webcam will be closed when you close our browser. Press any key to exit.</p>`
+  text_position: 'center', 
+
+  stimulus: () => "<p>You have completed the task. Your score is "+correct_response_counter+".  The webcam will be closed when you close our browser. Press any key to exit.</p>"
 };
 
 
 
-
+//console.log(data.length/1024/1024 + "Mb") ; 
 var on_finish_callback = function() {
  // var csv = jsPsych.data.get().csv();
  // var filename = "Webgazeapp.csv";
   //downloadCSV(csv,filename);
- // jsPsych.data.displayData();
+ //jsPsych.data.displayData();
  //jsPsych.data.get().addToAll({subject: subject_id});
   jsPsych.data.addProperties({
     subject: subject_id,
     interaction: jsPsych.data.getInteractionData().json(),
   });
   var  data = JSON.stringify(jsPsych.data.get().values());
-  console.log(data.length/1024/1024 + "Mb") ; 
   $.ajax( {
     type: "POST",
     url: "/",
@@ -442,23 +450,25 @@ var on_finish_callback = function() {
   })
   .fail(function() {
   //  alert("problem occured while writing data to box.");
-   // var csv = jsPsych.data.get().csv();
-   // var filename = jsPsych.data.get().values()[0].subject_id + ".csv";
-   // utils.downloadCSV(csv,filename);
   })
 }
 
 var trialcounter;
+
 function startExperiment() {
   jsPsych.init({
     timeline: [
-      fullscreen, experimentOverview, choiceInstruction,eyeTrackingInstruction1,eyeTrackingInstruction2, 
-       inital_eye_calibration,choiceInstructionReinforce ,
-       practice_choice ,EnterRealChoice , decoy_gamble1, breaktime,recalibration ,decoy_gamble2, end,
+      fullscreenEnter, experimentOverview, choiceInstruction,eyeTrackingInstruction1,eyeTrackingInstruction2, 
+         inital_eye_calibration,choiceInstructionReinforce ,
+         practice_choice ,EnterRealChoice , decoy_gamble1, breaktime,
+         recalibration ,decoy_gamble2, end,
     ],
     on_trial_finish: function() {
       trialcounter = jsPsych.data.get().count();
-      if (trialcounter ==20) {
+      if(window.innerHeight != screen.height) {
+        jsPsych.endExperiment('The experiment was ended. Thanks for your participation! ');
+      }
+      if (trialcounter ==40) {
         on_finish_callback();
         jsPsych.data.reset();
       }
@@ -478,7 +488,7 @@ function saveData() {
   xhr.onload = function() {
     if(xhr.status == 200){
       var response = JSON.parse(xhr.responseText);
-      console.log(response.success);
+   //   console.log(response.success);
     }
   };
   xhr.send(jsPsych.data.get().json());
