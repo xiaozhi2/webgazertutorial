@@ -33,7 +33,7 @@ jsPsych.plugins["binary-choice"] = (function () {
       doEyeTracking: {
         type: jsPsych.plugins.parameterType.BOOL,
         pretty_name: 'eye-tracking',
-        default: false,
+        default: true,
         description: 'Whether to do the eye tracking during this trial.'
       }
       }  
