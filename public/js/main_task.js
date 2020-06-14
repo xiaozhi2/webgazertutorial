@@ -8,7 +8,7 @@ const nImageInst = 4;
 
 /** load all the images, and remember to preload before starting the egitxperiment */
 var instruct_img = [];
-for( var i = 0 ; i < nImageInst; i++) {
+for (var i = 0; i < nImageInst; i++) {
   instruct_img.push('../img/instruct' + i + '.png');
 }
 
@@ -38,12 +38,12 @@ var fullscreenEnter = {
   The experiment will switch to full screen mode when you press the button below.  <br/>
             When you are ready, press the button below to begin.</div>`,
   fullscreen_mode: true,
-  on_finish: function() {
+  on_finish: function () {
     document.body.style.cursor = 'none'
   }
 };
 
-var experimentOverview= {
+var experimentOverview = {
   type: 'html-keyboard-response',
   stimulus: `<div> <font size=120%; font color = 'green';>Experiment Overview </font><br/>
                                        <br><br/>
@@ -60,7 +60,7 @@ var experimentOverview= {
                 If you are ready, please press the  <b>SPACE BAR</b> to begin</div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
-  on_finish: function() {
+  on_finish: function () {
     document.body.style.cursor = 'none'
   }
 }
@@ -87,7 +87,7 @@ var choiceInstruction = {
                             If you are ready, please press the  <b>SPACE BAR</b> to continue.</div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
-  on_finish: function() {
+  on_finish: function () {
     document.body.style.cursor = 'none'
   }
 }
@@ -109,10 +109,10 @@ var eyeTrackingInstruction1 = {
                 Try to keep this from happening! 
                 <br><br/>
                 When you are ready, press the SPACE BAR to continue. </div>`,
-                post_trial_gap: 500,
-                choices: ['spacebar'],
-                
-              }
+  post_trial_gap: 500,
+  choices: ['spacebar'],
+
+}
 
 
 var eyeTrackingInstruction2 = {
@@ -131,10 +131,10 @@ var eyeTrackingInstruction2 = {
            </div>`,
   post_trial_gap: 500,
   choices: ['spacebar'],
-              
- }
 
- var eyeTrackingNote = {
+}
+
+var eyeTrackingNote = {
 
   type: 'html-keyboard-response',
   stimulus: `<div><font size=120%; font color = 'green';> Calibration & Validation Notes</font><br/>
@@ -158,7 +158,7 @@ var eyeTrackingInstruction2 = {
   post_trial_gap: 500,
   choices: ['spacebar'],
 
- }
+}
 
 
 //eye tracking parameters
@@ -169,14 +169,14 @@ var eye_calibration_state = {
   doInit: true
 };
 
-var init_flag = function() {
- if (calibrationAttempt == 0)  {
-   return true;
+var init_flag = function () {
+  if (calibrationAttempt == 0) {
+    return true;
   } else return false;
 };
 
-var validationTols = [130,165,200];
-var validationAccuracys = [0.8,0.7,0.6];
+var validationTols = [130, 165, 200];
+var validationAccuracys = [0.8, 0.7, 0.6];
 
 /** first we need a calibration and validation step before entering into the main choice task */
 var inital_eye_calibration = {
@@ -188,19 +188,19 @@ var inital_eye_calibration = {
       doCalibration: true,
       doValidation: true,
       calibrationDots: 12, // change to 12
-      calibrationDuration:5, //change to 5
+      calibrationDuration: 5, //change to 5
       doValidation: true,
-      validationDots: 12,  //change to 12
-      validationDuration:3,
+      validationDots: 12, //change to 12
+      validationDuration: 3,
       validationTol: validationTols[calibrationAttempt],
-     // showPoint: true,
+      // showPoint: true,
       on_finish: function (data) {
         calibrationAttempt++;
-        if (data.accuracy >= validationAccuracys[calibrationAttempt - 1])  success= true;
+        if (data.accuracy >= validationAccuracys[calibrationAttempt - 1]) success = true;
         if (!success && calibrationAttempt == calibrationMax) {
           jsPsych.endExperiment('We are sorry that eye-calibration failed too many times.The experiment was ended. Thanks for your participation! ');
         }
-      } 
+      }
     }
   ],
   loop_function: () => (calibrationAttempt < calibrationMax) && (!success),
@@ -249,14 +249,14 @@ var practice_choice = {
     fixation1,
     {
       type: "decoy-gamble",
-     // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
-     stimulus: () => thisPrac[practice_choice_count],
+      // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
+      stimulus: () => thisPrac[practice_choice_count],
       timing_response: 0,
       doEyeTracking: false,
-      on_finish: function(data) {
+      on_finish: function (data) {
         correct_response_counter = correct_response_counter + data.correct,
-        practice_choice_count++,
-        document.body.style.cursor = 'none'
+          practice_choice_count++,
+          document.body.style.cursor = 'none'
       }
     }
   ],
@@ -269,7 +269,7 @@ var EnterRealChoice = {
   type: 'html-keyboard-response',
   stimulus: `<div><font size=120%; font color = 'green';>Choice Task </font><br/>
                                         <br><br/>
-         Now you can move on to the real choices. When you are ready, please press the <b>SPACE BAR</b> to begin the practice choice. </div>`,
+         Now you can move on to the real choices. When you are ready, please press the <b>SPACE BAR</b> to begin the real task. </div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
 }
@@ -281,51 +281,56 @@ var binary_choice_states = {
   doCalibration: false,
   calibrationDots: 10,
   dovalidation: true,
-  validationDots:  2
+  validationDots: 2
 };
 
-var validate_counter = 0; 
+var validate_counter = 0;
 validationAccuracy = 0.6;
+
 function binary_choice_state_logger(finish_data_accuracy) {
-   // ...TODO
-   if(finish_data_accuracy >= validationAccuracy) {
+  // ...TODO
+  if (finish_data_accuracy >= validationAccuracy) {
     binary_choice_states = {
-      doCalibration: false,
-      dovalidation: true,
-      validationDots: 2 },
-      validate_counter = 0;
-    } if (finish_data_accuracy < validationAccuracy & validate_counter <=2) {
-      binary_choice_states = {
         doCalibration: false,
         dovalidation: true,
-        validationDots: 2 },
-        validate_counter += 1;
-    }if (validate_counter ==3) {
-      binary_choice_states = {
-        //set the default 
-        doCalibration: true,
-        calibrationDots: 1, ///change to 12
-        dovalidation: false,
-        }
-        validate_counter = 0;
-    } 
+        validationDots: 2
+      },
+      validate_counter = 0;
+  }
+  if (finish_data_accuracy < validationAccuracy & validate_counter <= 2) {
+    binary_choice_states = {
+        doCalibration: false,
+        dovalidation: true,
+        validationDots: 2
+      },
+      validate_counter += 1;
+  }
+  if (validate_counter == 3) {
+    binary_choice_states = {
+      //set the default 
+      doCalibration: true,
+      calibrationDots: 12, ///change to 12
+      dovalidation: false,
+    }
+    validate_counter = 0;
+  }
 };
 
-var binary_state_updater =  function() {
-  return binary_choice_states ; 
+var binary_state_updater = function () {
+  return binary_choice_states;
 };
 
 
 
 /** choices */
 var fixation = {
-  type:  "eye-tracking",
+  type: "eye-tracking",
   doInit: false,
-  doCalibration: () =>  binary_state_updater().doCalibration,
-  calibrationDots: () =>  binary_state_updater().calibrationDots,
-  doValidation: () =>  binary_state_updater().dovalidation,
-  validationDots: () =>  binary_state_updater().validationDots,
-  validationTol:130,
+  doCalibration: () => binary_state_updater().doCalibration,
+  calibrationDots: () => binary_state_updater().calibrationDots,
+  doValidation: () => binary_state_updater().dovalidation,
+  validationDots: () => binary_state_updater().validationDots,
+  validationTol: 130,
   validationDuration: 3,
   calibrationDuration: 5,
   on_finish: (data) => binary_choice_state_logger(data.accuracy)
@@ -342,12 +347,12 @@ var decoy_gamble1 = {
     fixation,
     {
       type: "decoy-gamble",
-     // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
-     stimulus: () => thisStimuli[choice_count], 
+      // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
+      stimulus: () => thisStimuli[choice_count],
       timing_response: 0,
-      doEyeTracking:true,
-      on_finish: function(data){
-          correct_response_counter = correct_response_counter + data.correct,
+      doEyeTracking: true,
+      on_finish: function (data) {
+        correct_response_counter = correct_response_counter + data.correct,
           choice_count++
       }
     }
@@ -363,14 +368,14 @@ var breaktime = {
              <br></br>
              When you are ready to continue the study, press the <b>SPACE BAR</b>.</dive>`,
   choices: ['spacebar'],
-  on_start: function() {
+  on_start: function () {
     webgazer.pause(),
-    webgazer.clearData()
+      webgazer.clearData()
   },
   post_trial_gap: 500,
 };
 
-var recalibrationInstruction2= {
+var recalibrationInstruction2 = {
   type: "html-keyboard-response",
   on_start: () => webgazer.resume(),
   stimulus: `<div>We need to redo the calibration and validation before you return to the study. </br>
@@ -390,7 +395,7 @@ var recalibration = {
       type: "eye-tracking",
       doCalibration: true,
       calibrationDots: 12,
-      calibrationDuration:5,
+      calibrationDuration: 5,
       doValidation: false,
     }
   ],
@@ -403,14 +408,14 @@ var decoy_gamble2 = {
     fixation,
     {
       type: "decoy-gamble",
-     // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
-     stimulus: () => thisStimuli[choice_count], 
+      // stimulus: () => get_multichoice_images(),  //() => multi_choice_images[multi_choice_count],
+      stimulus: () => thisStimuli[choice_count],
       timing_response: 0,
-      doEyeTracking:true,
-      on_finish: function(data){
+      doEyeTracking: true,
+      on_finish: function (data) {
         correct_response_counter = correct_response_counter + data.correct,
-        choice_count++
-    }
+          choice_count++
+      }
     }
   ],
   loop_function: () => choice_count < ntrials,
@@ -419,38 +424,55 @@ var decoy_gamble2 = {
 
 var correct_rate = 0;
 var end = {
+  on_start: () => closeFullscreen(),
   type: "html-keyboard-response",
-  text_position: 'center', 
+  text_position: 'center',
 
-  stimulus: () => "<p>You have completed the task. Your score is "+correct_response_counter+".  The webcam will be closed when you close our browser. Press any key to exit.</p>"
+  stimulus: () => "<p>You have completed the task. Your score is " + correct_response_counter + ".  The webcam will be closed when you close our browser.</p>"
 };
 
 
 
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
+
 //console.log(data.length/1024/1024 + "Mb") ; 
-var on_finish_callback = function() {
- // var csv = jsPsych.data.get().csv();
- // var filename = "Webgazeapp.csv";
+var on_finish_callback = function () {
+  // var csv = jsPsych.data.get().csv();
+  // var filename = "Webgazeapp.csv";
   //downloadCSV(csv,filename);
- //jsPsych.data.displayData();
- //jsPsych.data.get().addToAll({subject: subject_id});
+  //jsPsych.data.displayData();
+  //jsPsych.data.get().addToAll({subject: subject_id});
   jsPsych.data.addProperties({
     subject: subject_id,
     interaction: jsPsych.data.getInteractionData().json(),
   });
-  var  data = JSON.stringify(jsPsych.data.get().values());
-  $.ajax( {
-    type: "POST",
-    url: "/",
-    data: data,
-    contentType: "application/json"
-  })
-  .done(function() {
-  //  alert("your data has been saved!")
-  })
-  .fail(function() {
-  //  alert("problem occured while writing data to box.");
-  })
+  var data = JSON.stringify(jsPsych.data.get().values());
+  $.ajax({
+      type: "POST",
+      url: "/",
+      data: data,
+      contentType: "application/json"
+    })
+    .done(function () {
+      //  alert("your data has been saved!")
+    })
+    .fail(function () {
+      //  alert("problem occured while writing data to box.");
+    })
 }
 
 var trialcounter;
@@ -458,24 +480,25 @@ var trialcounter;
 function startExperiment() {
   jsPsych.init({
     timeline: [
-      fullscreenEnter, experimentOverview, choiceInstruction,eyeTrackingInstruction1,eyeTrackingInstruction2, 
-         inital_eye_calibration,choiceInstructionReinforce ,
-         practice_choice ,EnterRealChoice , decoy_gamble1, breaktime,
-         recalibration ,decoy_gamble2, end,
+      fullscreenEnter, experimentOverview,
+      choiceInstruction, eyeTrackingInstruction1, eyeTrackingInstruction2,
+      inital_eye_calibration, choiceInstructionReinforce,
+      practice_choice, EnterRealChoice, decoy_gamble1, breaktime, recalibration, decoy_gamble2,
+      end,
     ],
-    on_trial_finish: function() {
+    on_trial_finish: function () {
       trialcounter = jsPsych.data.get().count();
-      if(window.innerHeight != screen.height) {
+      if (window.innerHeight != screen.height) {
         jsPsych.endExperiment('The experiment was ended. Thanks for your participation! ');
       }
-      if (trialcounter ==40) {
+      if (trialcounter == 40) {
         on_finish_callback();
         jsPsych.data.reset();
       }
     },
-    preload_images:[instruct_img],
+    preload_images: [instruct_img],
     on_finish: () => on_finish_callback(),
-    on_close:() => on_finish_callback()
+    on_close: () => on_finish_callback()
 
   });
 };
@@ -485,12 +508,11 @@ function saveData() {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
   xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function() {
-    if(xhr.status == 200){
+  xhr.onload = function () {
+    if (xhr.status == 200) {
       var response = JSON.parse(xhr.responseText);
-   //   console.log(response.success);
+      //   console.log(response.success);
     }
   };
   xhr.send(jsPsych.data.get().json());
 }
-
