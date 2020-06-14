@@ -88,8 +88,10 @@ p {
 /* borrowing Bootstrap style for btn elements, but combining styles a bit */
 .jspsych-btn {
   display: inline-block;
-  padding: 6px 12px;
-  margin: 0px;
+   /* padding: 6px 12px;  */
+   padding: 10px 20px; 
+  /* margin: 0px; */
+  margin: 4px 20px;
   font-size: 14px;
   font-weight: 400;
   font-family: 'Open Sans', 'Arial', sans-serif;

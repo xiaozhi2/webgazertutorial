@@ -3,28 +3,31 @@
     position: relative;
     display: flex;
     margin: auto;
-
+   
 }
 
 
 .container-multi-choice-column {
     flex: 80%; 
-   padding: 100px; 
+   padding: 40px; 
 }
 
 
 #multiattribute-choices-stimulus-left {
   position: relative;
   border: 3px solid;
+ /* margin-right:30px, */
+ right:12.5vw
 
-  
 }
 
 #multiattribute-choices-stimulus-right {
   position: relative;
   border: 3px solid;
-  left: 30px
+   left: 12.5vw; 
+  /* margin-left:30px, */
 }
+
   #multiattribute-choices-stimulus-upperleft{
     position: absolute;
     top: 30px;

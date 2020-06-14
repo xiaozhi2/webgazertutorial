@@ -17,7 +17,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
   function optionalMessage(display_element, flag, callback) {
     if (flag) {
-      display_element.innerHTML = '<div>validation start.  please press the spacebar to continue</div>';
+      display_element.innerHTML = '<div>Validation starts.  please press the spacebar to continue</div>';
       var onkeyup = function(e) {
         if (e.keyCode == 32) {
           removeEventListener('keyup', onkeyup);
@@ -109,7 +109,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
       var cy = parseInt(Math.round(calibration_dot.offset().top));
 
       var trainer;
-      wait(500, function() {
+      wait(800, function() {
         trainer = setInterval(function() { webgazer.watchListener(cx, cy); }, 5);
       });
 
@@ -326,7 +326,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
       },
       validationTol: {
         type: jsPsych.plugins.parameterType.INT,
-        default: 250,
+        default: 200,
         description: 'validation tolerent distance'
       },
       validationThreshold: {
@@ -343,13 +343,14 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
     function startWebgazer(callback) {
       if (trial.doInit) {
-        display_element.innerHTML = '<div>Webcam is ready, please press the spacebar to continue</div>';
+       display_element.innerHTML = '<div> Before you begin the task, please wait until the video feed appears on the screen. Please adjust your seat position. When you are ready,  please press the spacebar to continue.</div>';
+       //  Webcam is ready, please press the spacebar to continue
         //begin webgazer and also set up webgazer parameter
         webgazer.begin(function (err) {
           if (err) {
             callback(err);
             return;
-          }
+          } 
           //webgazer.setRegression('ridge');
           webgazer.setRegression('threadedRidge');
           //webgazer.params.showVideo = trial.doVideo;

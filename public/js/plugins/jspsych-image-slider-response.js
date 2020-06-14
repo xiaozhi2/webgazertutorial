@@ -56,7 +56,7 @@ jsPsych.plugins['image-slider-response'] = (function() {
         description: 'Sets the maximum value of the slider',
       },
       start: {
-				type: jsPsych.plugins.parameterType.INT,
+				type: jsPsych.plugins.parameterType.FLOAT,
 				pretty_name: 'Slider starting value',
 				default: 50,
 				description: 'Sets the starting value of the slider',
@@ -123,6 +123,9 @@ jsPsych.plugins['image-slider-response'] = (function() {
   plugin.trial = function(display_element, trial) {
 
     var html = '<div id="jspsych-image-slider-response-wrapper" style="margin: 100px 0px;">';
+    html += '<button type="button" id = "dislike-button" class="jspsych-btn"  margin = "4px 2px" '+ (trial.require_movement ? "disabled" : "") + '>' + 'DISLIKE</button>';
+    html += '<br></br>';
+    html += '<br></br>';
     html += '<div id="jspsych-image-slider-response-stimulus">';
     html += '<img src="'+trial.stimulus+'" style="';
     if(trial.stimulus_height !== null){
@@ -144,6 +147,7 @@ jsPsych.plugins['image-slider-response'] = (function() {
       html += 'width:'+trial.slider_width+'px;';
     }
     html += '">';
+    //html += '<br></br>';
     html += '<input type="range" value="'+trial.start+'" min="'+trial.min+'" max="'+trial.max+'" step="'+trial.step+'" style="width: 100%;" id="jspsych-image-slider-response-response"></input>';
     html += '<div>'
     for(var j=0; j < trial.labels.length; j++){
@@ -162,8 +166,10 @@ jsPsych.plugins['image-slider-response'] = (function() {
     }
 
     // add submit button
+    html +=   '<div display ="inline-block">';
+  //  html += '<button type="button" id = "dislike-button" class="jspsych-btn"  margin = "4px 2px" '+ (trial.require_movement ? "disabled" : "") + '>' + 'DISLIKE</button>';
     html += '<button id="jspsych-image-slider-response-next" class="jspsych-btn" '+ (trial.require_movement ? "disabled" : "") + '>'+trial.button_label+'</button>';
-
+    html += '</div>';
     display_element.innerHTML = html;
 
     var response = {
@@ -172,10 +178,33 @@ jsPsych.plugins['image-slider-response'] = (function() {
     };
 
     if(trial.require_movement){
+      display_element.querySelector("#dislike-button").disabled  = false;
       display_element.querySelector('#jspsych-image-slider-response-response').addEventListener('change', function(){
         display_element.querySelector('#jspsych-image-slider-response-next').disabled = false;
       })
     }
+
+    display_element.querySelector('#jspsych-image-slider-response-response').addEventListener('change', function() {
+      display_element.querySelector("#dislike-button").disabled  = true;
+    });
+
+
+
+
+    display_element.querySelector("#dislike-button").addEventListener('click',function() {
+
+       // measure response time
+       var endTime = performance.now();
+       response.rt = endTime - startTime;
+       response.response = -1;
+       if(trial.response_ends_trial){
+        end_trial();
+      } else {
+        display_element.querySelector('#jspsych-image-slider-response-next').disabled = true;
+      }
+
+    });
+    
 
     display_element.querySelector('#jspsych-image-slider-response-next').addEventListener('click', function() {
       // measure response time

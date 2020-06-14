@@ -69,10 +69,10 @@ jsPsych.plugins["binary-choice"] = (function () {
 
       new_html += '<div class="container-multi-choice">';
       new_html += '<div class="container-multi-choice-column" id= "multiattribute-choices-stimulus-left">';
-      new_html += `<div id="multiattribute-choices-stimulus-left " ><img height="200px" width="300px" src="${trial.stimulus[0]}"/></div>`;
+      new_html += `<div id="multiattribute-choices-stimulus-left " ><img height="300px" width="500px" src="${trial.stimulus[0]}"/></div>`;
       new_html += '</div>';
       new_html += '<div class="container-multi-choice-column" id= "multiattribute-choices-stimulus-right">';
-      new_html += `<div id="multiattribute-choices-stimulus-upperright " ><img height="200px" width="300px" src="${trial.stimulus[1]}"/></div>`;
+      new_html += `<div id="multiattribute-choices-stimulus-right " ><img height="300px" width="500px" src="${trial.stimulus[1]}"/></div>`;
       new_html += '</div>';
       new_html += '<div id="binary-timeoutinfo"></div>';
       new_html += '</div>';
@@ -148,8 +148,8 @@ jsPsych.plugins["binary-choice"] = (function () {
 
     var end_trial = function (timeout) {
 
-      webgazer.pause();
-      clearInterval(eye_tracking_interval);
+   //   webgazer.pause();
+   ///   clearInterval(eye_tracking_interval);
 
       // data saving
       var trial_data = {
@@ -158,29 +158,29 @@ jsPsych.plugins["binary-choice"] = (function () {
         "rt": response.rt,
         "key_press": response.key,
         "choices": trial.choices,
-        "eyeData": JSON.stringify(eyeData) 
+        //"eyeData": JSON.stringify(eyeData) 
       };
       // console.log(trial_data);
       jsPsych.finishTrial(trial_data);
     };
 
     display_stimuli();
-    webgazer.resume();
-    var eyeData = {history:[]};
-    var eye_tracking_interval = setInterval(
-      function() {
-        var pos = webgazer.getCurrentPrediction();
-        if (pos) {
-          var relativePosX = pos.x/screen.width;
-          var relativePosY = pos.y/screen.height;
-          eyeData.history.push({
-            'x': pos.x,
-            'y': pos.y,
-            'relative-x': relativePosX,
-            'relative-y': relativePosY,
-          });
-        }
-      },1);
+   // webgazer.resume();
+    // var eyeData = {history:[]};
+    // var eye_tracking_interval = setInterval(
+    //   function() {
+    //     var pos = webgazer.getCurrentPrediction();
+    //     if (pos) {
+    //       var relativePosX = pos.x/screen.width;
+    //       var relativePosY = pos.y/screen.height;
+    //       eyeData.history.push({
+    //         'x': pos.x,
+    //         'y': pos.y,
+    //         'relative-x': relativePosX,
+    //         'relative-y': relativePosY,
+    //       });
+    //     }
+    //   },50);
   };
 
   return plugin;
