@@ -30,6 +30,12 @@ jsPsych.plugins["binary-choice"] = (function () {
         default: 0,
         description: 'timing_response.'
       },
+      doEyeTracking: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'eye-tracking',
+        default: false,
+        description: 'Whether to do the eye tracking during this trial.'
+      }
       }  
   };
 
@@ -150,7 +156,9 @@ jsPsych.plugins["binary-choice"] = (function () {
 
    //   webgazer.pause();
    ///   clearInterval(eye_tracking_interval);
-
+   if(trial.doEyeTracking) {
+    webgazer.pause();
+    clearInterval(eye_tracking_interval); }
       // data saving
       var trial_data = {
         "stimulus": trial.stimulus,
@@ -158,29 +166,52 @@ jsPsych.plugins["binary-choice"] = (function () {
         "rt": response.rt,
         "key_press": response.key,
         "choices": trial.choices,
-        //"eyeData": JSON.stringify(eyeData) 
+        "eyeData": JSON.stringify(eyeData) 
       };
       // console.log(trial_data);
       jsPsych.finishTrial(trial_data);
     };
 
+    var eyeData = {history:[]};
     display_stimuli();
-   // webgazer.resume();
-    // var eyeData = {history:[]};
-    // var eye_tracking_interval = setInterval(
-    //   function() {
-    //     var pos = webgazer.getCurrentPrediction();
-    //     if (pos) {
-    //       var relativePosX = pos.x/screen.width;
-    //       var relativePosY = pos.y/screen.height;
-    //       eyeData.history.push({
-    //         'x': pos.x,
-    //         'y': pos.y,
-    //         'relative-x': relativePosX,
-    //         'relative-y': relativePosY,
-    //       });
-    //     }
-    //   },50);
+    if(trial.doEyeTracking) {
+      webgazer.resume();
+    webgazer.showVideo(false);
+    webgazer.showFaceOverlay(false);
+    webgazer.showFaceFeedbackBox(false);
+    var starttime = performance.now();
+    var eye_tracking_interval = setInterval(
+      function() {
+        var pos = webgazer.getCurrentPrediction();
+        if (pos) {
+
+          var relativePosX = pos.x/screen.width ;
+          var relativePosY = pos.y/screen.height;
+          var relativePosX2= pos.x/innerWidth ;
+          var relativePosY2 = pos.y/innerHeight;
+          eyeData.history.push({
+           // 'x': pos.x,
+          //  'y': pos.y,
+            'relative-x': relativePosX,
+            'relative-y': relativePosY,
+            'relative-x2': relativePosX2,
+            'relative-y2': relativePosY2,
+            'elapse-time': performance.now() - starttime
+          });
+        }
+      },1);
+    }
+
+    
+
+
+
+
+
+
+
+
+ 
   };
 
   return plugin;

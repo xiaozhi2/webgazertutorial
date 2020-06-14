@@ -22,6 +22,7 @@ for (var i = 0; i < nrating; i++) {
 
 
 
+/** load all the images, and remember to preload before starting the egitxperiment */
 var instruct_img = [];
 for (var i = 0; i < nImageInst; i++) {
   instruct_img.push('../img/instruct' + i + '.png');
@@ -364,6 +365,31 @@ var recalibration = {
   ],
 };
 
+var eyeTrackingNote = {
+
+  type: 'html-keyboard-response',
+  stimulus: `<div><font size=120%; font color = 'green';> Calibration & Validation Notes</font><br/>
+                                                            <br><br/>
+            <font size = 5px font color = "yellow">There are several <b>IMPORTANT</b> notes that are useful for passing the calibration task:<br/></font>
+            <img height="200px" width="1000px" src="${instruct_img[3]}"><br/>
+               <br><br/>
+             <div style="text-align-last:left">
+             In addition to the notes in the figure: <br/>
+            (1). Use your eyes to look around the screen and try to avoid moving your head. <br/>
+            (2). Try to keep lights in front of you rather than behind you so that the webcam can clearly see your face. Avoid sitting with a window behind you.  <br/>
+            (3). After you have made these adjustments, check again that your face fits nicely within the box on the video feed and that the box is green. <br/></div>
+              <br><br/>
+             <font size=5px; font color = 'red';> <b>NOTE</b>:  <br/>
+             If you are back on this page, it means the calibration and validation did not work as well as we would like.  <br/>
+             Please read the notes above again, make any adjustments, and try again.  <br/>
+             There are only <b>THREE</b> chances to get this right.  <br/>
+             Otherwise, you will terminate the study and receive $1 for the participation. </font><br/>
+             <br><br/>
+             <font size=5px; >When you are ready, press the <b>SPACE BAR</b> to continue. </font></div>`,
+  post_trial_gap: 500,
+  choices: ['spacebar'],
+
+}
 
 
 var choiceInstructionReinforce = {
@@ -396,7 +422,8 @@ var fixation1 = {
   trial_duration: fixation_duration,
 };
 
-
+var validationTols = [130, 165, 200];
+var validationAccuracys = [0.9, 0.7, 0.6];
 
 var charity_prac_choice_count = 0;
 var charity_prac_choice = {
@@ -637,13 +664,13 @@ var randomselector = function (data) {
     return trial.rating > 0  || trial.trial_type == "binary-choice"
   })
   //trial.rating > 0  || 
-  console.log(trials.count())
+ // console.log(trials.count())
   // console.log(trials.json());
   selectedtrialindex = getRandomInt(0, trials.count() - 1);
   selectedtrial = JSON.parse(trials.json())[selectedtrialindex];
 
   select_trial.type = selectedtrial.trial_type;
-  console.log(JSON.parse(trials.json())[selectedtrialindex]);
+ //console.log(JSON.parse(trials.json())[selectedtrialindex]);
 
   if (select_trial.type === "image-slider-response") {
     select_trial.type = "Willingness to Donate"
@@ -677,6 +704,7 @@ We will let you know your final payment soon! </br>
 
 // `<p>You have completed the task. The webcam will be closed when you close our browser.</p>`
 var end = {
+  on_start: () => closeFullscreen(),
   type: "html-keyboard-response",
   on_start: () => closeFullscreen(),
   stimulus: (data) => randomselector(data)
@@ -699,6 +727,21 @@ function closeFullscreen() {
   }
 }
 
+/* Close fullscreen */
+function closeFullscreen() {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  } else if (document.mozCancelFullScreen) {
+    /* Firefox */
+    document.mozCancelFullScreen();
+  } else if (document.webkitExitFullscreen) {
+    /* Chrome, Safari and Opera */
+    document.webkitExitFullscreen();
+  } else if (document.msExitFullscreen) {
+    /* IE/Edge */
+    document.msExitFullscreen();
+  }
+}
 
 var on_finish_callback = function () {
  // jsPsych.data.displayData();
@@ -751,7 +794,6 @@ function startExperiment() {
 };
 
 
-
 function saveData() {
   var xhr = new XMLHttpRequest();
   xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
@@ -759,7 +801,7 @@ function saveData() {
   xhr.onload = function () {
     if (xhr.status == 200) {
       var response = JSON.parse(xhr.responseText);
-      console.log(response.success);
+      //   console.log(response.success);
     }
   };
   xhr.send(jsPsych.data.get().json());
