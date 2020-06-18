@@ -1,11 +1,14 @@
 /**************/
 /** Constants */
 /**************/
-const nrating = 15;
-const nchoices = 18;
+const nrating = 8;
+const nchoices = 10;
 const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
+const debugModeCaliDot = 1;
+const realCaliDot = 12;
+
 
 var subject_id = jsPsych.randomization.randomID(15);
 
@@ -84,7 +87,7 @@ var fullscreenEnter = {
   Also, please close any browser tabs that could produce popups or alerts and interfere with the study.   <br/>
   Finally, once the study has started, <b>DO NOT EXIT</b> fullscreen mode or you will terminate the study and not receive any payment. <br/>   
   <br><br/>
-  The experiment will switch to full screen mode when you press the button below.  <br/>
+  The study will switch to full screen mode when you press the button below.  <br/>
             When you are ready, press the button below to begin.</div>`,
   fullscreen_mode: true,
   on_finish: function () {
@@ -97,14 +100,14 @@ var eyeTrackingInstruction1 = {
   type: 'html-keyboard-response',
   stimulus: `<div> <font size=120%; font color = 'green';>Calibration & Validation </font><br/>
                                              <br><br/>
-                Before we begin with the real task, we need to turn on and adjust your webcam for eye-tracking.  <br/>
-                There are two parts to this process. The first part is calibration,  and the second part is validation.<br/>
+                Before we begin with the study, we need to turn on and adjust your webcam for eye-tracking.  <br/>
+                There are two parts to this process. The first part is calibration and the second part is validation.<br/>
                 <br><br/>
-                During calibration, you will see a series of dots like this <span id="calibration_dot_instruction"></span> appear on the screen, each for 5   seconds.<br/>
+                During calibration, you will see a series of dots like this <span id="calibration_dot_instruction"></span> appear on the screen, each for 5 seconds.<br/>
                 Your task is simply to stare directly at each dot until it disappears.<br/>
                 Then, quickly move your eyes to the next dot and repeat.<br/>
                 <br><br/>
-                Validation is basically the same as calibration. You simply need to stare at each dot until it disappears.<br/>
+                Validation is basically the same as calibration. You simply need to stare at each dot until it turns <b><font color='green'>green</font></b> and disappears.<br/>
                 During validation, the dot may turn <b><font color='yellow'>yellow</font></b>, indicating that you don’t seem to be staring directly at it.  <br/>
                 Try to keep this from happening! 
                 <br><br/>
@@ -122,7 +125,7 @@ var eyeTrackingInstruction2 = {
         <br><br/>
          <img height="220px" width="270px" src="${instruct_img[0]}"><br/>
        <br><br/>
-                         Try to keep your entire face within the box. When your face is in a good position the box will turn <b><font color='green'>green</font></b>. <br/>
+                         Try to keep your entire face within the box. When your face is in a good position, the box will turn <b><font color='green'>green</font></b>. <br/>
                          <font size=5px; font color = 'red';> <b>NOTE</b>: the video feed only appears during calibration.</font><br/>
                          <br><br/>
                          <font size=5px; >When you are ready, press the  <b>SPACE BAR</b> to continue.</font>
@@ -136,13 +139,13 @@ var eyeTrackingInstruction2 = {
 var eyeTrackingNote = {
 
   type: 'html-keyboard-response',
-  stimulus: `<div><font size=120%; font color = 'green';> Calibration & Validation Notes</font><br/>
+  stimulus: `<div><font size=120%; font color = 'green';> Calibration & Validation</font><br/>
                                                                           <br><br/>
              <font size = 5px font color = "yellow">There are several <b>IMPORTANT</b> notes that are useful for passing the calibration task:<br/></font>
              <img height="200px" width="1000px" src="${instruct_img[1]}"><br/>
              <br><br/>
              <div style="text-align-last:left">
-            In addition to the notes in the figure: <br/>
+            In addition to the tips in the figure: <br/>
             (1). Use your eyes to look around the screen and try to avoid moving your head. <br/>
             (2). Try to keep lights in front of you rather than behind you so that the webcam can clearly see your face. Avoid sitting with a window behind you.  <br/>
             (3). After you have made these adjustments, check again that your face fits nicely within the box on the video feed and that the box is green. <br/></div>
@@ -151,9 +154,9 @@ var eyeTrackingNote = {
             If you are back on this page, it means the calibration and validation did not work as well as we would like.  <br/>
             Please read the notes above again, make any adjustments, and try again.  <br/>
             There are only <b>THREE</b> chances to get this right.  <br/>
-            Otherwise, you will terminate the study and receive $1 for the participation. </font><br/>
+            Otherwise, you will terminate the study and receive 25 cents for the participation. </font><br/>
             <br><br/>
-             <font size=5px; >When you are ready, press the <b>SPACE BAR</b> to continue. </font></div>`,
+             <font size=5px; >When you are ready, press the <b>SPACE BAR</b> to bring up the video feed and make these adjustments. </font></div>`,
   post_trial_gap: 500,
   choices: ['spacebar'],
 
@@ -186,10 +189,10 @@ var inital_eye_calibration = {
       doInit: () => init_flag(),
       doCalibration: true,
       doValidation: true,
-      calibrationDots: 12, // change to 12
+      calibrationDots: debugModeCaliDot, // change to 12
       calibrationDuration: 5, //change to 5
       doValidation: true,
-      validationDots: 12, //change to 12
+      validationDots: debugModeCaliDot, //change to 12
       validationDuration: 3,
       validationTol: validationTols[calibrationAttempt],
       // showPoint: true,
@@ -216,13 +219,13 @@ var experimentOverview = {
   },
   stimulus: `<div> <font size=120%; font color = 'green';>Experiment Overview </font><br/>
                                                      <br><br/>
-                          Success! The calibration and validation was successful. Now, we will begin with the task. 
+                          Success! The calibration and validation was successful. Now, we will begin with the study. 
                           In Today's study, you will be making a series of decisions about donating to charities. <br/>
                           There will be multiple parts to the study, and you will receive instructions before each new part. <br/>
                           The decisions that you make will affect your final earnings, so make sure to pay attention to the instructions. <br/>
                           At the end of the study, we will randomly select one of your decisions and carry it out. <br/>   
                           So, you should treat every decision as if it is the only one that counts. <br/>
-                          In addition to the randomly selected payment decision, you will also earn a fixed fee of $X for completing the study. <br/>
+                          In addition to the randomly selected donation, you will also earn a fixed fee of $3 for completing the study. <br/>
                                                         <br><br/>
                           When you are ready, press the  <b>SPACE BAR</b> to continue</div>`,
   choices: ['spacebar'],
@@ -240,7 +243,7 @@ var slideshowOverview = {
              In this part of the study, you will see all the charities for which you will make donation decisions.<br/>
              There will be a short description of each charity's mission. <br/>
              Each charity will only be displayed for 3 seconds. <br/>
-             At the end of the study there will be a short quiz about some of these charities.  <br/>
+             At the end of the study there will be a short quiz about some of these charities. Each correct answer will earn you an 10 cents bonus. <br/>
                                           <br><br/>
              When you are ready, press the  <b>SPACE BAR</b> to start viewing the charities.</div>`,
   choices: ['spacebar'],
@@ -324,8 +327,8 @@ var choiceOverview = {
            Each round, you will see two charities on the screen. You have to choose which charity you prefer to donate to. <br/>    
            To select the left charity, please <b><font color='green'>F</font></b> key. <br/>
            To select the right charity, please press  <b><font color='green'>J</font></b> key. <br/>
-           After each choice, stare at the red circle at the center of the screen. <br/>
-           If one of these rounds is randomly selected for payment, then we will implement your decision from that round.  <br/>
+           After each choice, make sure to stare at the red circles that will appear on the screen, until they disappear. <br/>
+           If one of these rounds is randomly selected for payment, then we will implement your decision from that round and send the money to that charity.  <br/>
            Again, you should treat each decision as if it is the only that counts. <br/>
            <br><br/>
            When you are ready, press the  <b>SPACE BAR</b> to continue.  </div>`,
@@ -355,41 +358,16 @@ var recalibration = {
     {
       type: "eye-tracking",
       doCalibration: true,
-      calibrationDots: 12,
+      calibrationDots: debugModeCaliDot, // change to 12
       calibrationDuration: 5,
       doValidation: true,
-      validationDots: 12,
+      validationDots: debugModeCaliDot,// change to 12
       validationDuration: 3,
       validationTol: 200
     }
   ],
 };
 
-var eyeTrackingNote = {
-
-  type: 'html-keyboard-response',
-  stimulus: `<div><font size=120%; font color = 'green';> Calibration & Validation Notes</font><br/>
-                                                            <br><br/>
-            <font size = 5px font color = "yellow">There are several <b>IMPORTANT</b> notes that are useful for passing the calibration task:<br/></font>
-            <img height="200px" width="1000px" src="${instruct_img[3]}"><br/>
-               <br><br/>
-             <div style="text-align-last:left">
-             In addition to the notes in the figure: <br/>
-            (1). Use your eyes to look around the screen and try to avoid moving your head. <br/>
-            (2). Try to keep lights in front of you rather than behind you so that the webcam can clearly see your face. Avoid sitting with a window behind you.  <br/>
-            (3). After you have made these adjustments, check again that your face fits nicely within the box on the video feed and that the box is green. <br/></div>
-              <br><br/>
-             <font size=5px; font color = 'red';> <b>NOTE</b>:  <br/>
-             If you are back on this page, it means the calibration and validation did not work as well as we would like.  <br/>
-             Please read the notes above again, make any adjustments, and try again.  <br/>
-             There are only <b>THREE</b> chances to get this right.  <br/>
-             Otherwise, you will terminate the study and receive $1 for the participation. </font><br/>
-             <br><br/>
-             <font size=5px; >When you are ready, press the <b>SPACE BAR</b> to continue. </font></div>`,
-  post_trial_gap: 500,
-  choices: ['spacebar'],
-
-}
 
 
 var choiceInstructionReinforce = {
@@ -402,12 +380,14 @@ var choiceInstructionReinforce = {
        If you want to donate to the left charity,  please press  <b><font color='green'>F</font></b> key; <br/>
        If you want to donate to the right charity,  please press <b><font color='green'>J</font></b>  key;<br/>
                   <br><br/>
-       Between rounds, make sure to stare at the red dot on the screen until it disappears. <br/>
-       This is part of ongoing adjustments to the eye-tracking.  If the computer thinks that you are looking somewhere other than directly at the red dot,  <br/>
+       After each choice, make sure to stare at the red circles that will appear on the screen, until they disappear.  <br/>
+       This is part of ongoing adjustments to the eye-tracking.  <br/>
+       <br><br/>
+       NOTE: If the computer thinks that you are looking somewhere other than directly at the red dot,  <br/>
        you may need to redo the calibration and validation process, slowing down the study.  <br/>
                                                <br><br/>
       Before the real decisions, there will be 3 practice rounds. <br/>
-      When you are ready, please press the <b>SPACE BAR</b> to begin the practice choice</div>`,
+      When you are ready, press the <b>SPACE BAR</b> to begin with a couple of practice rounds. </div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
 }
@@ -423,7 +403,7 @@ var fixation1 = {
 };
 
 var validationTols = [130, 165, 200];
-var validationAccuracys = [0.9, 0.7, 0.6];
+var validationAccuracys = [0, 0.7, 0.6];//change to 0.8
 
 var charity_prac_choice_count = 0;
 var charity_prac_choice = {
@@ -441,7 +421,7 @@ var charity_prac_choice = {
 
 var EnterRealChoice = {
   type: 'html-keyboard-response',
-  stimulus: `<div> Now you can move on to the real choices. When you are ready, please press the <b>SPACE BAR</b> to begin the real task.</div>`,
+  stimulus: `<div> Now you can move on to the real choices. When you are ready, please press the <b>SPACE BAR</b> to begin.</div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
 }
@@ -519,7 +499,7 @@ var fixation = {
 var charity_choice_count = 0;
 var charity_choice1 = {
   timeline: [
-    fixation,
+    fixation1, //change to fixation
     {
       type: "binary-choice",
       stimulus: () => get_multichoice_images()[charity_choice_count],
@@ -564,7 +544,7 @@ var recalibration2 = {
     {
       type: "eye-tracking",
       doCalibration: true,
-      calibrationDots: 12,
+      calibrationDots: debugModeCaliDot, ///change to 12
       calibrationDuration: 5,
       doValidation: false,
     }
@@ -574,7 +554,7 @@ var recalibration2 = {
 
 var charity_choice2 = {
   timeline: [
-    fixation,
+    fixation1, // change to fixation
     {
       type: "binary-choice",
       stimulus: () => get_multichoice_images()[charity_choice_count],
@@ -592,9 +572,9 @@ var charity_choice2 = {
 var slideshowQuizOverview = {
   type: 'html-keyboard-response',
   on_start: () => document.body.style.cursor = 'pointer',
-  stimulus: `<div> <font size=120%; font color = 'green';>Charity quiz </font><br/>
+  stimulus: `<div> <font size=120%; font color = 'green';> Charity quiz </font><br/>
                                        <br><br/>
-            You have completed the choice task! Now, you will begin with the last small quiz. <br/> 
+            You have completed the choice task! There is one last small quiz before we are done. <br/> 
             In this short quiz, you will see five multiple-choice questions about the charities. <br/> 
             Please scroll down to answer all the quiz questions. <br/> 
                                           <br><br/>
@@ -603,11 +583,18 @@ var slideshowQuizOverview = {
   post_trial_gap: 500,
 }
 
+var postQuizScreen = {
+  type: 'html-keyboard-response',
+  on_start: () => document.body.style.cursor = 'pointer',
+  stimulus: `<div>   You have completed the quiz! Press the space bar to see the selected donation decision. <br/>  </div>`,
+  choices: ['spacebar'],
+  post_trial_gap: 500,
+}
+
 
 var quiz_options = allQuizStimuli;
 var quiz_img_count = 0;
 var quiz_correct_count = 0
-var quiz_score;
 var slideshowQuiz = {
   type: 'survey-multi-choice',
   questions: [{
@@ -644,7 +631,6 @@ var slideshowQuiz = {
         quiz_correct_count++
       }
     }
-    quiz_score = quiz_correct_count / 5;
   }
 }
 
@@ -686,14 +672,14 @@ var randomselector = function (data) {
     }
   }
   html = ` <div> One trial from the <b><font color='red'>${select_trial.type}</font></b> task has been selected for donation! </br>
-The charity we are going to make the donation is: </br>
+The charity you donate to is: </br>
 <br></br>
 <img height="300px" width="500px" src="${select_trial.charity}"/> </br>
  <br></br>
-We will donate  <b><font color='red'>$${select_trial.donation}</font></b> to this charity.</br>
+We will donate  <b><font color='red'>$${select_trial.donation}</font></b> to this charity on your behalf.</br>
 <br></br>
-Thank you for your participation! You can close the browser to end the experiment now. The webcam will be closed when you close the browser.</br>
-We will let you know your final payment soon! </br>
+Thank you for participating! The webcam will turn off when you close the browser tab.</br>
+Your quiz score is ${q(quiz_correct_count/5)*100}, we will add ${quiz_correct_count*3} to your final payment</br>
 </div>`;
   return html
 }
@@ -776,7 +762,7 @@ function startExperiment() {
        choiceOverview, recalibration,choiceInstructionReinforce, charity_prac_choice,
       EnterRealChoice, charity_choice1, breaktime, 
       recalibration2, charity_choice2, 
-       slideshowQuizOverview,slideshowQuiz ,
+       slideshowQuizOverview,slideshowQuiz,postQuizScreen,
       end
     ],
     on_trial_finish: function () {

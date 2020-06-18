@@ -162,6 +162,8 @@ jsPsych.plugins["binary-choice"] = (function () {
       // data saving
       var trial_data = {
         "stimulus": trial.stimulus,
+        "left_stimulus":trial.stimulus[0],
+        "right_stimulus": trial.stimulus[1],
         "probability":trial.Probabilty,
         "rt": response.rt,
         "key_press": response.key,
@@ -199,7 +201,7 @@ jsPsych.plugins["binary-choice"] = (function () {
             'elapse-time': performance.now() - starttime
           });
         }
-      },1);
+      },20);
     }
 
     
