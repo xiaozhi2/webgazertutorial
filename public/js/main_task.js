@@ -679,7 +679,7 @@ The charity you donate to is: </br>
 We will donate  <b><font color='red'>$${select_trial.donation}</font></b> to this charity on your behalf.</br>
 <br></br>
 Thank you for participating! The webcam will turn off when you close the browser tab.</br>
-Your quiz score is ${(quiz_correct_count/5)*100}, we will add ${quiz_correct_count*3} to your final payment</br>
+Your quiz score is ${(quiz_correct_count/5)*100}, we will add ${quiz_correct_count*10} cents to your final payment</br>
 </div>`;
   return html
 }
