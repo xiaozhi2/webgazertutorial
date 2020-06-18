@@ -154,7 +154,7 @@ var eyeTrackingNote = {
             If you are back on this page, it means the calibration and validation did not work as well as we would like.  <br/>
             Please read the notes above again, make any adjustments, and try again.  <br/>
             There are only <b>THREE</b> chances to get this right.  <br/>
-            Otherwise, you will terminate the study and receive 25 cents for the participation. </font><br/>
+            Otherwise, you will terminate the study and receive 50 cents for the participation. </font><br/>
             <br><br/>
              <font size=5px; >When you are ready, press the <b>SPACE BAR</b> to bring up the video feed and make these adjustments. </font></div>`,
   post_trial_gap: 500,
