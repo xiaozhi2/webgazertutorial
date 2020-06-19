@@ -35,6 +35,12 @@ jsPsych.plugins["binary-choice"] = (function () {
         pretty_name: 'eye-tracking',
         default: true,
         description: 'Whether to do the eye tracking during this trial.'
+      },
+      realOrPrac: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        pretty_name: 'eye-tracking',
+        default: true,
+        description: 'Whether it is a real choice, real- true'
       }
       }  
   };
@@ -75,10 +81,10 @@ jsPsych.plugins["binary-choice"] = (function () {
 
       new_html += '<div class="container-multi-choice">';
       new_html += '<div class="container-multi-choice-column" id= "multiattribute-choices-stimulus-left">';
-      new_html += `<div id="multiattribute-choices-stimulus-left " ><img height="300px" width="500px" src="${trial.stimulus[0]}"/></div>`;
+      new_html += `<div id="multiattribute-choices-stimulus-left " ><img height="320px" width="450px" src="${trial.stimulus[0]}"/></div>`;
       new_html += '</div>';
       new_html += '<div class="container-multi-choice-column" id= "multiattribute-choices-stimulus-right">';
-      new_html += `<div id="multiattribute-choices-stimulus-right " ><img height="300px" width="500px" src="${trial.stimulus[1]}"/></div>`;
+      new_html += `<div id="multiattribute-choices-stimulus-right " ><img height="320px" width="450px" src="${trial.stimulus[1]}"/></div>`;
       new_html += '</div>';
       new_html += '<div id="binary-timeoutinfo"></div>';
       new_html += '</div>';
@@ -168,7 +174,8 @@ jsPsych.plugins["binary-choice"] = (function () {
         "rt": response.rt,
         "key_press": response.key,
         "choices": trial.choices,
-        "eyeData": JSON.stringify(eyeData) 
+        "eyeData": JSON.stringify(eyeData),
+        "realtrial":  trial.realOrPrac
       };
       // console.log(trial_data);
       jsPsych.finishTrial(trial_data);

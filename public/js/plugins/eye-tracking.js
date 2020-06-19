@@ -17,7 +17,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
   function optionalMessage(display_element, flag, callback) {
     if (flag) {
-      display_element.innerHTML = '<div>Validation starts. Please press the spacebar to continue.</div>';
+      display_element.innerHTML = '<div>Validation starts. Press the spacebar to continue.</div>';
       var onkeyup = function(e) {
         if (e.keyCode == 32) {
           removeEventListener('keyup', onkeyup);

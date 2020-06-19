@@ -3,33 +3,42 @@
     position: relative;
     display: flex;
     margin: auto;
-   
-}
+   justify-content: center;  
+} 
 
 
 .container-multi-choice-column {
-    flex: 80%; 
-   padding: 40px; 
+  /* width: 90%; */
+   position: relative;
+    flex: 1 1 80%; 
+    /* max-width: 95%; this is mainly an IE 10-11 fix */
+     width: 100%;
+   /* width: calc(1/2*100% - (1 - 1/2)*10px); */
+    /* flex: 80%;  */
+   padding: 20px;    
+  /* height: 100px;
+  width: 100px; */
+  margin: 200px;
 }
 
 
 #multiattribute-choices-stimulus-left {
   position: relative;
   border: 3px solid;
- /* margin-right:30px, */
- right:12.5vw
+  /* margin-left:30px,  */
+   /* right:12.5px */
 
 }
 
 #multiattribute-choices-stimulus-right {
   position: relative;
   border: 3px solid;
-   left: 12.5vw; 
-  /* margin-left:30px, */
+ /* left: 12.5vw;   */
+   /* margin-right:30px  */
 }
 
   #multiattribute-choices-stimulus-upperleft{
-    position: absolute;
+    position: relative; 
     top: 30px;
     left: 50px;
     background-repeat: no-repeat;
@@ -42,7 +51,7 @@
   
 
   #multiattribute-choices-stimulus-upperright{
-    position: absolute;
+    position: relative; 
     top: 30px;
     right:50px;
     background-repeat: no-repeat;
@@ -55,7 +64,7 @@
 
 
   #multiattribute-choices-stimulus-lowerright{
-    position: absolute;
+    position: relative; 
     bottom: 30px;
     right:50px;
     background-repeat: no-repeat;
@@ -67,7 +76,7 @@
 
 
   #multiattribute-choices-stimulus-lowerleft{
-    position: absolute;
+    position: relative; 
     bottom: 30px;
     /* border-top: -10px; */
     left:20px;
