@@ -235,7 +235,7 @@ var experimentOverview = {
                           So, you should treat every decision as if it is the only one that counts. <br/>
                           In addition to the randomly selected donation, you will also earn a fixed fee of $3 for completing the study. <br/>
                                                         <br><br/>
-                          When you are ready, press the  <b>SPACE BAR</b> to continue</div>`,
+                          When you are ready, press the  <b>SPACE BAR</b> to continue. </div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
 }
@@ -787,7 +787,7 @@ function startExperiment() {
         jsPsych.data.reset();
       }
     },
-    preload_images: [exp_images, instruct_img,quiz_img],
+    preload_images: [exp_images, instruct_img,quiz_img,prac_img],
     on_finish: () => on_finish_callback(),
     on_close: () => on_finish_callback()
 
