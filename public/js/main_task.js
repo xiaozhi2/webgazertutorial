@@ -10,7 +10,7 @@ const debugModeCaliDot = 1;
 const realCaliDot = 12;
 
 
-var subject_id = jsPsych.randomization.randomID(15);
+var subject_id = jsPsych.randomization.randomID(7);
 
 /** load all the images, and remember to preload before starting the experiment */
 var exp_images = [];
@@ -79,12 +79,40 @@ var get_multichoice_images = function () {
   }
 };
 
+function makeSurveyCode(status) {
+  uploadSubjectStatus(status);
+  var prefix = {'success': 'cg', 'failed': 'sb'}[status]
+  return `${prefix}${subject_id}`;
+}
+
+function uploadSubjectStatus(status) {
+  $.ajax({
+    type: "POST",
+    url: "/subject-status",
+    data: JSON.stringify({subject_id, status}),
+    contentType: "application/json"
+  });
+}
+
 
 //preassign a probability string
 
 /***********************/
 /******** Trials *******/
 /***********************/
+
+
+var start_exp_survey_trial = {
+  type: 'survey-text',
+  questions: [
+    {prompt: "What's your worker ID?", rows: 2, columns:50 , required:true}, 
+    {prompt: "What's your age?", rows: 1, columns: 50, required:true},
+    {prompt: "What's your gender? (Female/Male)", rows: 1, columns: 50,require: true},
+  ],
+  preamble: `<div>Thanks for choosing our experiment! Please answer the following questions to begin today's study. </div>`,
+};
+
+
 
 /** full screen */
 var fullscreenEnter = {
@@ -208,7 +236,9 @@ var inital_eye_calibration = {
         calibrationAttempt++;
         if (data.accuracy >= validationAccuracys[calibrationAttempt - 1]) success = true;
         if (!success && calibrationAttempt == calibrationMax) {
-          jsPsych.endExperiment('We are sorry that eye-calibration failed too many times.The experiment was ended. Thanks for participating! ');
+          survey_code = makeSurveyCode('failed');
+          closeFullscreen();
+          jsPsych.endExperiment(`We are sorry that eye-calibration failed too many times.The experiment was ended.Thank you for participating! </br> You will receive 50 cents for participating. Your survey code is: ${survey_code}`);
         }
       }
     }
@@ -657,7 +687,7 @@ var select_trial = {
   charity: [],
   donation: 5
 }
-var randomselector = function (data) {
+var randomselector = function () {
   var trials = jsPsych.data.get().filterCustom(function (trial) {
     return trial.rating > 0  || (trial.trial_type == "binary-choice" && trial.realtrial)
   })
@@ -680,31 +710,37 @@ var randomselector = function (data) {
       select_trial.charity = selectedtrial.stimulus[1];
     }
   }
-  html = ` <div> One trial from the <b><font color='red'>${select_trial.type}</font></b> task has been selected for donation! </br>
-The charity you donate to is: </br>
-<br></br>
-<img height="300px" width="500px" src="${select_trial.charity}"/> </br>
- <br></br>
-We will donate  <b><font color='red'>$${select_trial.donation}</font></b> to this charity on your behalf.</br>
-<br></br>
-Thank you for participating! The webcam will turn off when you close the browser tab.</br>
-Your quiz score is ${(quiz_correct_count/5)*100}, we will add ${quiz_correct_count*10} cents to your final payment.</br>
-</div>`;
-  return html
+   html = ` <div> One trial from the <b><font color='red'>${select_trial.type}</font></b> task has been selected for donation! </br>
+    The charity you donate to is: </br>
+    <br></br>
+    <img height="300px" width="500px" src="${select_trial.charity}"/> </br>
+     <br></br>
+     We will donate  <b><font color='red'>$${select_trial.donation}</font></b> to this charity on your behalf.</br>
+     <br></br>
+     Thank you for participating! The webcam will turn off when you close the browser tab.</br>
+     Your quiz score is ${(quiz_correct_count/5)*100}, we will add ${quiz_correct_count*10} cents to your final payment.</br>
+     Your survey code is: ${makeSurveyCode('success')}
+     </div>`;
+ return html
 }
 
 
+ var successExp = false
+ var success_guard = {
+   type: 'call-function',
+   func: () => {successExp = true}
+ }
 
 
 
 // `<p>You have completed the task. The webcam will be closed when you close our browser.</p>`
-var end = {
-  on_start: () => closeFullscreen(),
-  type: "html-keyboard-response",
-  on_start: () => closeFullscreen(),
-  stimulus: (data) => randomselector(data)
+// var end = {
+//   on_start: () => closeFullscreen(),
+//   type: "html-keyboard-response",
+//   on_start: () => closeFullscreen(),
+//   stimulus: (data) => randomselector(data)
 
-};
+// };
 
 /* Close fullscreen */
 function closeFullscreen() {
@@ -743,13 +779,15 @@ var on_finish_callback = function () {
   jsPsych.data.addProperties({
     subject: subject_id,
     interaction: jsPsych.data.getInteractionData().json(),
-    quiz: quiz_correct_count
+    quiz: quiz_correct_count,
+    windowWidth: screen.width,
+    windowHight: screen.height
   });
   var data = JSON.stringify(jsPsych.data.get().values());
   //console.log(data.length / 1024 / 1024 + "Mb");
   $.ajax({
       type: "POST",
-      url: "/",
+      url: "/data",
       data: data,
       contentType: "application/json"
     })
@@ -763,9 +801,15 @@ var on_finish_callback = function () {
 
 var trialcounter;
 
+
+
+
+
+
 function startExperiment() {
   jsPsych.init({
     timeline: [
+      start_exp_survey_trial,
       fullscreenEnter,
       eyeTrackingInstruction1 ,eyeTrackingInstruction2 , inital_eye_calibration ,
       experimentOverview,slideshowOverview,charity_show, 
@@ -775,12 +819,16 @@ function startExperiment() {
      EnterRealChoice, charity_choice1, breaktime, 
       recalibration2, charity_choice2, 
      slideshowQuizOverview,slideshowQuiz,postQuizScreen,
-      end
+    success_guard
+    //end
     ],
     on_trial_finish: function () {
       trialcounter = jsPsych.data.get().count();
-      if (window.innerHeight != screen.height) {
+      if (window.innerHeight != screen.height & trialcounter > 1) {
         jsPsych.endExperiment('The experiment was ended. Thank you for participating! ');
+      } else if(successExp) {
+        closeFullscreen()
+        jsPsych.endExperiment(randomselector());
       }
       if (trialcounter == 40) {
         on_finish_callback();

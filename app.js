@@ -2,10 +2,11 @@
 var  express = require("express");
 // instanitate the app
 var app = express();
+const subjects = {}
 const Dropbox = require("dropbox").Dropbox;
 const fetch = require("node-fetch"); 
 const body_parser = require("body-parser");
-
+const starttime = Date.now();
 
 const dbx = new Dropbox( {
     accessToken: '1NerZyRuMNAAAAAAAAADcM_4pe_BhnJ7WYqApduLh_MxBEfEs_fmLKgNE-QY9RZ7',
@@ -35,6 +36,15 @@ saveDropbox = function(content, filename, foldername) {
     });
 };
 
+saveDropboxSingleFile = function (content, filename) {
+    return dbx.filesUpload({
+        path: "/" + filename,
+        contents: content,
+        autorename: false,
+        mode:  'overwrite'
+    });
+};
+
 
 app.set('port', (process.env.PORT || 2000));
 
@@ -47,7 +57,7 @@ app.use(body_parser.json({limit:"50mb"}));
 app.get("/", function(request,response) {
     response.render("index.html");
 })
-app.post("/",function(request,response)  {
+app.post("/data",function(request,response)  {
     request.setTimeout(0);
    data = request.body; 
    id=data[0].subject;
@@ -60,6 +70,18 @@ app.post("/",function(request,response)  {
     //save the data
 }
 );
+
+
+app.post("/subject-status", function (request, response) {
+    subject_id = request.body.subject_id;
+    status = request.body.status;
+    subjects[subject_id] = status;
+    saveDropboxSingleFile(JSON.stringify(subjects), `subject_status_${starttime}.json`)
+    .then(() => console.log(`subjuct status recorded: ${subject_id},${status}`))
+    .catch(err => console.log(err));
+    //saveDropboxSingleFile(JSON.stringify(subjects), `subject_status_${starttime}.json`);
+   // console.log(`subjuct status recorded: ${subject_id},${status}`);
+});
 
 
 //start the server
