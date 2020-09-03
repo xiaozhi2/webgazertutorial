@@ -843,19 +843,20 @@ var objectdetect = (function() {
    * @param {object} opt_options Optional configuration to the tracker.
    */
   tracking.initUserMedia_ = function(element, opt_options) {
-    window.navigator.getUserMedia({
+    window.navigator.mediaDevices.getUserMedia({
       video: true,
       audio: opt_options.audio
-    }, function(stream) {
-        try {
-          element.src = window.URL.createObjectURL(stream);
-        } catch (err) {
-          element.src = stream;
-        }
-      }, function() {
-        throw Error('Cannot capture user camera.');
+    })
+    .then(function(stream) {
+      try {
+        element.src = window.URL.createObjectURL(stream);
+      } catch (err) {
+        element.src = stream;
       }
-    );
+    })
+    .catch(function() {
+      throw Error('Cannot capture user camera.');
+    });
   };
 
   /**
@@ -10722,18 +10723,19 @@ function store_points(x, y, k) {
             paintCurrentFrame(videoElementCanvas, videoElementCanvas.width, videoElementCanvas.height);
             
             // Get gaze prediction (ask clm to track; pass the data to the regressor; get back a prediction)
-            latestGazeData = getPrediction();
+            latestGazeData = webgazer.params.showGazeDot || callback !== nopCallback ? getPrediction() : null;
             // Count time
             var elapsedTime = performance.now() - clockStart;
             // [20180611 James Tompkin]: What does this line do?
             callback(latestGazeData, elapsedTime);
 
             // Draw face overlay
-            if( webgazer.params.showFaceOverlay )
+            if( webgazer.params.showVideo && webgazer.params.showFaceOverlay )
             {
                 // Draw the face overlay
                 faceOverlay.getContext('2d').clearRect( 0, 0, videoElement.videoWidth, videoElement.videoHeight);
                 var cl = webgazer.getTracker().clm;
+                if( latestGazeData === null ) cl.track(videoElementCanvas);
                 if( cl.getCurrentPosition() ) {
                     cl.draw(faceOverlay);
                 }
@@ -10741,9 +10743,10 @@ function store_points(x, y, k) {
 
             // Feedback box
             // Check that the eyes are inside of the validation box
-            if( webgazer.params.showFaceFeedbackBox )
-                checkEyesInValidationBox();
-
+            if( webgazer.params.showVideo && webgazer.params.showFaceFeedbackBox ) {
+              if( latestGazeData === null ) latestEyeFeatures = getPupilFeatures(videoElementCanvas, videoElementCanvas.width, videoElementCanvas.height);
+              checkEyesInValidationBox();
+            }
 
             if( latestGazeData ) {
 

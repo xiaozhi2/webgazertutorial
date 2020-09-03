@@ -1,8 +1,8 @@
 /**************/
 /** Constants */
 /**************/
-const nrating = 8;
-const nchoices = 10;
+const nrating = 50;
+const nchoices = 70;
 const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
@@ -15,13 +15,9 @@ var subject_id = jsPsych.randomization.randomID(7);
 /** load all the images, and remember to preload before starting the experiment */
 var exp_images = [];
 for (var i = 0; i < nrating; i++) {
-  exp_images.push('../img/charityStimuli/charityStimulus_' + i + '.jpg');
+  exp_images.push('../img/FoodImages/foodStimulus_' + i + '.jpg');
 }
 
-var slideshow_images = [];
-for (var i = 0; i < nrating; i++) {
-  slideshow_images.push('../img/charitySlide/charitySlide_' + i + '.jpg');
-}
 
 
 
@@ -31,14 +27,10 @@ for (var i = 0; i < nImageInst; i++) {
   instruct_img.push('../img/instruct' + i + '.png');
 }
 
-var quiz_img = [];
-for (var i = 1; i <= 5; i++) {
-  quiz_img.push('../img/quizImg/quiz' + i + '.jpg');
-}
 
 var prac_img = [];
 for (var i = 1; i <= 4; i++) {
-  prac_img.push('../img/pracImg/prac' + i + '.jpg');
+  prac_img.push('../img/pracImg/foodprac_' + i + '.jpg');
 }
 
 
@@ -139,7 +131,7 @@ var eyeTrackingInstruction1 = {
                 
                 There are two parts to this process. The first part is calibration and the second part is validation.<br/>
                 <br><br/>
-                During calibration, you will see a series of dots like this <span id="calibration_dot_instruction"></span> appear on the screen, each for 5 seconds.<br/>
+                During calibration, you will see a series of dots like this <span id="calibration_dot_instruction"></span> appear on the screen, each for 3 seconds.<br/>
                 Your task is simply to stare directly at each dot until it disappears.<br/>
                 Then, quickly move your eyes to the next dot and repeat.<br/>
                 <br><br/>
@@ -225,21 +217,26 @@ var inital_eye_calibration = {
       doInit: () => init_flag(),
       doCalibration: true,
       doValidation: true,
-      calibrationDots: debugModeCaliDot, // change to 12
-      calibrationDuration: 5, //change to 5
+      calibrationDots:  realCaliDot , // change to 12
+      calibrationDuration: 3, //change to 5
       doValidation: true,
-      validationDots: debugModeCaliDot, //change to 12
-      validationDuration: 3,
+      validationDots:  realCaliDot , //change to 12
+      validationDuration: 2,
       validationTol: validationTols[calibrationAttempt],
       // showPoint: true,
       on_finish: function (data) {
+        console.log(JSON.parse(data.validationPoints)[0].hitRatio == null);
+       if(JSON.parse(data.validationPoints)[0].hitRatio == null) {
+        jsPsych.endExperiment('The study has ended. You may have exited full screen mode, or your browser may not be compatible with our study.');
+       } else {
         calibrationAttempt++;
         if (data.accuracy >= validationAccuracys[calibrationAttempt - 1]) success = true;
         if (!success && calibrationAttempt == calibrationMax) {
           survey_code = makeSurveyCode('failed');
           closeFullscreen();
-          jsPsych.endExperiment(`We are sorry that eye-calibration failed too many times.The experiment was ended.Thank you for participating! </br> You will receive 50 cents for participating. Your survey code is: ${survey_code}`);
+          jsPsych.endExperiment(`Sorry, unfortunately the webcam calibration has failed.  We can't proceed with the study.  </br> You will receive 50 cents for making it this far. Your survey code is: ${survey_code}. Thank you for signing up!` );
         }
+       }
       }
     }
   ],
@@ -258,12 +255,9 @@ var experimentOverview = {
   stimulus: `<div> <font size=120%; font color = 'green';>Experiment Overview </font><br/>
                                                      <br><br/>
                          Success! The calibration and validation were successful. <br/>
-                          Now, we will begin with the study. In Today's study, you will be making a series of decisions about donating to charities.<br/> 
+                          Now, we will begin with the study. In Today's study, you will be making a series of decisions about snack foods.<br/> 
                           There will be multiple parts to the study, and you will receive instructions before each new part. <br/>
-                          The decisions that you make will affect your final earnings, so make sure to pay attention to the instructions. <br/>
-                          At the end of the study, we will randomly select one of your decisions and carry it out. <br/>   
-                          So, you should treat every decision as if it is the only one that counts. <br/>
-                          In addition to the randomly selected donation, you will also earn a fixed fee of $3 for completing the study. <br/>
+                          You will earn a fixed fee of <b>$7</b> for completing the study.<br/>
                                                         <br><br/>
                           When you are ready, press the  <b>SPACE BAR</b> to continue. </div>`,
   choices: ['spacebar'],
@@ -274,50 +268,20 @@ var experimentOverview = {
 /** image slide show */
 
 
-var slideshowOverview = {
-  type: 'html-keyboard-response',
-  stimulus: `<div> <font size=120%; font color = 'green';>Charity Overview </font><br/>
-                                       <br><br/>
-            In this part of the study, you will see all the charities for which you will make donation decisions.<br/>
-             There will be a short description of each charity's mission.  <br/>
-             Each charity will only be displayed for 3 seconds. <br/>
-             At the end of the study there will be a short quiz about some of these charities. Each correct answer will earn you a 10 cent bonus. <br/>
-                                          <br><br/>
-             When you are ready, press the  <b>SPACE BAR</b> to start viewing the charities.</div>`,
-  choices: ['spacebar'],
-  post_trial_gap: 500,
-}
-
-charity_show_images = jsPsych.randomization.shuffle(slideshow_images);
-charity_show_duration = 3000;
-
-
-/** slide show images  */
-var charity_show = {
-  type: 'image-keyboard-response',
-  timeline: charity_show_images.map(img => ({
-    stimulus: img
-  })),
-  choices: jsPsych.NO_KEYS,
-  trial_duration: charity_show_duration,
-};
-
-
 /** willingness to donate rating */
+
 var ratingOverview = {
   type: 'html-keyboard-response',
   on_start:   () => document.body.style.cursor = 'pointer',
-  stimulus: `<div> <font size=120%; font color = 'green';>Willingness to Donate</font><br/>
+  stimulus: `<div> <font size=120%; font color = 'green';>Rating task</font><br/>
                                        <br><br/>
-             Now, you will make decisions about each charity one by one. <br/> 
-             For each charity, you have a budget of $5 that you can use to donate to that charity.<br/>
-             Click on the scale to indicate how much of your $5 you want to donate to the charity. <br/> 
-             If you dislike a charity and would not want them to receive any money, even if it did not cost you anything, then click <b><font color = 'green'>DISLIKE</font></b>. <br/> 
-             <br><br/>
-        
-             Remember, <b><font color = 'red'>only one decision will be selected</font></b> for payment in the end, so you should treat every decision as if it is the only one that counts.  <br/> 
-             In other words, you do not need to spread out your money across charities.    <br/> 
-             For each charity you can donate anything from $0 to $5, regardless of what you chose for the other charities. <br/> 
+             Now, you will make decisions about each snack food one by one. <br/> 
+             For each snack food, please rate it on a scale from 0 to 10 based on how much you would like to eat this food right now.<br/>
+             A 0 means that you would neither like nor dislike to eat this food.  <br/> 
+             When choosing whether to eat this food or not, you would be willing to flip a coin.   <br/> 
+             A 10 means that you would really love to eat this food. <br/> 
+             If you dislike a food and would not want to eat it, then click DISLIKE. <br/> 
+             During the task, you need to use your mouse to move the slider to your desired rating. <br/> 
                                           <br><br/>
             When you are ready, press the  <b>SPACE BAR</b> to start.  </div>`,
   choices: ['spacebar'],
@@ -334,9 +298,9 @@ var ratings = {
   timeline: ratings_images.map(img => ({
     stimulus: img
   })),
-  labels: ['0', '1', '2', '3', '4', '5'],
+  labels: ['0', '1', '2', '3', '4', '5','6','7','8','9','10'],
   min: 0,
-  max: 5,
+  max: 10,
   start: () => getRandomInt(0, 5),
   require_movement: false,
   // prompt: '<p>Willingness to donate.</p>',
@@ -356,16 +320,15 @@ var ratings = {
 
 var choiceOverview = {
   type: 'html-keyboard-response',
-  stimulus: `<div><font size=120%; font color = 'green';>Donating Preference </font><br/>
+  stimulus: `<div><font size=120%; font color = 'green';>Food preference </font><br/>
                                         <br><br/>
-           In this part of the study you will be choosing between possible donations. <br/>    
-           Each round, you will see two charities on the screen. You have to choose which charity you prefer to donate to. <br/>    
-           To select the left charity, press the <b><font color='green'>F</font></b> key. <br/>
-           To select the right charity, press  the <b><font color='green'>J</font></b> key. <br/>
-           After each choice, make sure to stare at the red circles that will appear on the screen, until they disappear. <br/>
-           If one of these rounds is randomly selected as your donation decision, then we will implement your decision from that round and send the money to that charity.  <br/>
-           Again, you should treat each decision as if it is the only that counts. <br/>
-           <br><br/>
+            In this part of the study you will be choosing between snack foods. <br/>    
+            Each round, you will see two snack foods on the screen. <br/>    
+            You have to choose which snack food you would prefer to eat. <br/>   
+            To select the left food, press the <b><font color='green'>F</font></b> key. <br/>
+            To select the right food, press  the <b><font color='green'>J</font></b> key. <br/>
+            After each choice, stare at the red circle at the center of the screen.  <br/>
+            <br><br/>
            When you are ready, press the  <b>SPACE BAR</b> to continue.  </div>`,
   choices: ['spacebar'],
   post_trial_gap: 500,
@@ -393,11 +356,11 @@ var recalibration = {
     {
       type: "eye-tracking",
       doCalibration: true,
-      calibrationDots: debugModeCaliDot, // change to 12
-      calibrationDuration: 5,
+      calibrationDots: realCaliDot, // change to 12
+      calibrationDuration: 3,
       doValidation: true,
-      validationDots: debugModeCaliDot,// change to 12
-      validationDuration: 3,
+      validationDots: realCaliDot,// change to 12
+      validationDuration: 2,
       validationTol: 200
     }
   ],
@@ -407,13 +370,13 @@ var recalibration = {
 
 var choiceInstructionReinforce = {
   type: 'html-keyboard-response',
-  stimulus: `<div><font size=120%; font color = 'green';>Donating Preference</font><br/>
+  stimulus: `<div><font size=120%; font color = 'green';>Food preference</font><br/>
                                         <br><br/>
        Now, we will begin with the choice task. Please keep your head still, otherwise we may have to redo the calibration and validation.<br/>
        There will be a break halfway through the task. During the break you can move your head if you need to.    <br/>
-       As a quick reminder, you are choosing which charity to donate to: <br/>
-       If you want to donate to the left charity,  press  the <b><font color='green'>F</font></b> key; <br/>
-       If you want to donate to the right charity,  press the <b><font color='green'>J</font></b>  key;<br/>
+       As a quick reminder, you are choosing which food you would prefer to eat: <br/>
+       If you want to eat to the left food,  press  the <b><font color='green'>F</font></b> key; <br/>
+       If you want to eat to the right food,  press the <b><font color='green'>J</font></b>  key;<br/>
                   <br><br/>
        After each choice, make sure to stare at the red circles that will appear on the screen, until they disappear.  <br/>
        This is part of ongoing adjustments to the eye-tracking.    <br/>
@@ -441,8 +404,6 @@ var fixation1 = {
   trial_duration: fixation_duration,
 };
 
-var validationTols = [130, 165, 200];
-var validationAccuracys = [0, 0.7, 0.6];//change to 0.8
 
 var charity_prac_choice_count = 0;
 var charity_prac_choice = {
@@ -517,28 +478,58 @@ var binary_state_updater = function () {
 
 
 
-
 /** choices */
 var fixation = {
   type: "eye-tracking",
   doInit: false,
-  doCalibration: () => binary_state_updater().doCalibration,
-  calibrationDots: () => binary_state_updater().calibrationDots,
-  doValidation: () => binary_state_updater().dovalidation,
-  validationDots: () => binary_state_updater().validationDots,
+ // doCalibration: () => binary_state_updater().doCalibration,
+  doCalibration: false,
+  //calibrationDots: () => binary_state_updater().calibrationDots,
+ // doValidation: () => binary_state_updater().dovalidation,
+  doValidation: true,
+ // validationDots: () => binary_state_updater().validationDots,
+  validationDots: 3,
   validationTol: 130,
-  validationDuration: 3,
-  calibrationDuration: 5,
+  validationDuration: 2,
+//  calibrationDuration: 5,
   on_finish: (data) => binary_choice_state_logger(data.accuracy)
 };
+
+
+
+
+
+var if_node1 = {
+  timeline: [fixation],
+  conditional_function: function(){
+      if(Math.round(charity_choice_count%5) == 0){
+          return true;
+      } else {
+          return false;
+      }
+  }
+}
+
+
+var if_node2 = {
+  timeline: [fixation1],
+  conditional_function: function(){
+      if(Math.round(charity_choice_count%5) != 0){
+          return true;
+      } else {
+          return false;
+      }
+  }
+}
 
 
 
 /** real choice task */
 var charity_choice_count = 0;
 var charity_choice1 = {
-  timeline: [
-    fixation1, //change to fixation
+  timeline: [ 
+    if_node1,
+    if_node2,
     {
       type: "binary-choice",
       stimulus: () =>   charity_real_pairs[charity_choice_count],
@@ -584,11 +575,11 @@ var recalibration2 = {
     {
       type: "eye-tracking",
       doCalibration: true,
-      calibrationDots: debugModeCaliDot, ///change to 12
-      calibrationDuration: 5,
-      doValidation: false,
-      // validationDots:  debugModeCaliDot, ///change to 6
-      // validationDuration: 3,
+      calibrationDots: realCaliDot, ///change to 12
+      calibrationDuration: 3,
+      doValidation: true, 
+       validationDots:  8, ///change to 6
+      validationDuration: 2,
     }
   ],
 };
@@ -596,7 +587,8 @@ var recalibration2 = {
 
 var charity_choice2 = {
   timeline: [
-    fixation1, // change to fixation
+    if_node1,
+    if_node2, // change to fixation
     {
       type: "binary-choice",
       stimulus: () => charity_real_pairs[charity_choice_count],
@@ -609,84 +601,17 @@ var charity_choice2 = {
 };
 
 
-/** slide show quiz  */
-
-var slideshowQuizOverview = {
-  type: 'html-keyboard-response',
-  on_start: () => document.body.style.cursor = 'pointer',
-  stimulus: `<div> <font size=120%; font color = 'green';> Charity quiz </font><br/>
-                                       <br><br/>
-            You have completed the choice task! There is one last small quiz before we are done. <br/> 
-            In this short quiz, you will see five multiple-choice questions about the charities.  <br/> 
-            Please scroll down to answer all the quiz questions. <br/> 
-                                          <br><br/>
-            When you are ready, please press the  <b>SPACE BAR</b> to start the quiz.  </div>`,
-  choices: ['spacebar'],
-  post_trial_gap: 500,
-}
-
-var postQuizScreen = {
-  type: 'html-keyboard-response',
-  on_start: () => document.body.style.cursor = 'pointer',
-  stimulus: `<div>  You have completed the quiz. Press the space bar to see the selected donation decision. <br/>  </div>`,
-  choices: ['spacebar'],
-  post_trial_gap: 500,
-}
-
-
-var quiz_options = allQuizStimuli;
-var quiz_img_count = 0;
-var quiz_correct_count = 0
-var slideshowQuiz = {
-  type: 'survey-multi-choice',
-  questions: [{
-      prompt: quiz_img[0],
-      options: [allQuizStimuli[0].A, allQuizStimuli[0].B, allQuizStimuli[0].C],
-      required: true
-    },
-    {
-      prompt: quiz_img[1],
-      options: [allQuizStimuli[1].A, allQuizStimuli[1].B, allQuizStimuli[1].C],
-      required: true
-    },
-    {
-      prompt: quiz_img[2],
-      options: [allQuizStimuli[2].A, allQuizStimuli[2].B, allQuizStimuli[2].C],
-      required: true
-    },
-    {
-      prompt: quiz_img[3],
-      options: [allQuizStimuli[3].A, allQuizStimuli[3].B, allQuizStimuli[3].C],
-      required: true
-    },
-    {
-      prompt: quiz_img[4],
-      options: [allQuizStimuli[4].A, allQuizStimuli[4].B, allQuizStimuli[4].C],
-      required: true
-    },
-  ],
-  on_finish: (data) => {
-    all_quiz_response = Object.values(JSON.parse(data.quiz_responses));
-    for (var i = 0; i < 5; i++) {
-      correctResp = allQuizStimuli[i].correct;
-      if (correctResp == all_quiz_response[i]) {
-        quiz_correct_count++
-      }
-    }
-  }
-}
-
 
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 
-var select_trial = {
-  type: "",
-  charity: [],
-  donation: 5
-}
+// var select_trial = {
+//   type: "",
+//   charity: [],
+//   donation: 5
+// }
 var randomselector = function () {
   var trials = jsPsych.data.get().filterCustom(function (trial) {
     return trial.rating > 0  || (trial.trial_type == "binary-choice" && trial.realtrial)
@@ -733,30 +658,16 @@ var randomselector = function () {
 
 
 
-// `<p>You have completed the task. The webcam will be closed when you close our browser.</p>`
-// var end = {
-//   on_start: () => closeFullscreen(),
+// // `<p>You have completed the task. The webcam will be closed when you close our browser.</p>`
+//  var end = {
+//    on_start: () => closeFullscreen(),
 //   type: "html-keyboard-response",
-//   on_start: () => closeFullscreen(),
-//   stimulus: (data) => randomselector(data)
-
-// };
-
-/* Close fullscreen */
-function closeFullscreen() {
-  if (document.exitFullscreen) {
-    document.exitFullscreen();
-  } else if (document.mozCancelFullScreen) {
-    /* Firefox */
-    document.mozCancelFullScreen();
-  } else if (document.webkitExitFullscreen) {
-    /* Chrome, Safari and Opera */
-    document.webkitExitFullscreen();
-  } else if (document.msExitFullscreen) {
-    /* IE/Edge */
-    document.msExitFullscreen();
-  }
-}
+//   stimulus: `<div>Thank you for your participation! You can close the browser to end the experiment now. </br>
+//                   The webcam will turn off when you close the browser. </br>
+//                   Your survey code is: ${makeSurveyCode('success')}. </br>
+//                   We will send you $7 as your participant fee soon! </br> </div>`,
+  
+//  };
 
 /* Close fullscreen */
 function closeFullscreen() {
@@ -773,18 +684,21 @@ function closeFullscreen() {
     document.msExitFullscreen();
   }
 }
+
 
 var on_finish_callback = function () {
  // jsPsych.data.displayData();
   jsPsych.data.addProperties({
+    browser_name: bowser.name,
+    browser_type: bowser.version,
+    subject: subject_id,
     subject: subject_id,
     interaction: jsPsych.data.getInteractionData().json(),
-    quiz: quiz_correct_count,
+    //quiz: quiz_correct_count,
     windowWidth: screen.width,
     windowHight: screen.height
   });
   var data = JSON.stringify(jsPsych.data.get().values());
-  //console.log(data.length / 1024 / 1024 + "Mb");
   $.ajax({
       type: "POST",
       url: "/data",
@@ -792,10 +706,10 @@ var on_finish_callback = function () {
       contentType: "application/json"
     })
     .done(function () {
-      //  alert("your data has been saved!")
+      // alert("your data has been saved!")
     })
     .fail(function () {
-      //  alert("problem occured while writing data to box.");
+      //alert("problem occured while writing data to box.");
     })
 }
 
@@ -812,30 +726,33 @@ function startExperiment() {
       start_exp_survey_trial,
       fullscreenEnter,
       eyeTrackingInstruction1 ,eyeTrackingInstruction2 , inital_eye_calibration ,
-      experimentOverview,slideshowOverview,charity_show, 
+      experimentOverview,
        ratingOverview,  ratings,
       choiceOverview, recalibration,choiceInstructionReinforce,
       charity_prac_choice,
      EnterRealChoice, charity_choice1, breaktime, 
       recalibration2, charity_choice2, 
-     slideshowQuizOverview,slideshowQuiz,postQuizScreen,
+   //  slideshowQuizOverview,slideshowQuiz,postQuizScreen,
     success_guard
-    //end
     ],
     on_trial_finish: function () {
       trialcounter = jsPsych.data.get().count();
-      if (window.innerHeight != screen.height & trialcounter > 1) {
-        jsPsych.endExperiment('The experiment was ended. Thank you for participating! ');
-      } else if(successExp) {
-        closeFullscreen()
-        jsPsych.endExperiment(randomselector());
+     if(successExp) {
+      closeFullscreen()
+      document.body.style.cursor = 'pointer'
+      jsPsych.endExperiment(`<div>
+      Thank you for your participation! You can close the browser to end the experiment now. </br>
+                  The webcam will turn off when you close the browser. </br>
+                    Your survey code is: ${makeSurveyCode('success')}. </br>
+                   We will send you $7 as your participant fee soon! </br> 
+      </div>`);
       }
       if (trialcounter == 40) {
         on_finish_callback();
         jsPsych.data.reset();
       }
     },
-    preload_images: [exp_images, instruct_img,quiz_img,prac_img],
+    preload_images: [exp_images, instruct_img,prac_img],
     on_finish: () => on_finish_callback(),
     on_close: () => on_finish_callback()
 
