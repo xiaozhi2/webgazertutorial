@@ -208,7 +208,7 @@ jsPsych.plugins["binary-choice"] = (function () {
             'elapse-time': performance.now() - starttime
           });
         }
-      },80);
+      },50);
     }
 
     
