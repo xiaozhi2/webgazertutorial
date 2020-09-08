@@ -17,7 +17,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
   function optionalMessage(display_element, flag, callback) {
     if (flag) {
-      display_element.innerHTML = '<div>Validation starts. Press the spacebar to continue.</div>';
+      display_element.innerHTML = '<div>Validation starts. Press the spacebar to begin. </div>';
       var onkeyup = function(e) {
         if (e.keyCode == 32) {
           removeEventListener('keyup', onkeyup);
@@ -30,6 +30,21 @@ jsPsych.plugins["eye-tracking"] = (function () {
     }
   };
 
+
+  function optionalMessage_interTrial(display_element, flag, callback) {
+    if (flag) {
+      display_element.innerHTML = '<div>We need to re-calibrate you.  Take a short break and proceed by pressing the <b>SPACE BAR</b> when you are ready.</div>';
+      var onkeyup = function(e) {
+        if (e.keyCode == 32) {
+          removeEventListener('keyup', onkeyup);
+          callback();
+        }
+      };
+      addEventListener('keyup', onkeyup);
+    } else {
+      callback({});
+    }
+  };
   
 
   function vectorLength(x, y) {
@@ -245,6 +260,8 @@ jsPsych.plugins["eye-tracking"] = (function () {
             y: point.y,
             valid: success,
             hitRatio: hitRatio,
+            hitCount: hitCount,
+            totalcount: totalCount
           });
           validation_dot.css({'background-color': success ? success_color : failure_color});
           wait(1000, function() {
@@ -277,6 +294,11 @@ jsPsych.plugins["eye-tracking"] = (function () {
         type: jsPsych.plugins.parameterType.BOOL,
         default: false,
         description: 'whether this is the first time to load the web cam or not'
+      },
+      IsInterTrial: {
+        type: jsPsych.plugins.parameterType.BOOL,
+        default: false,
+        description: 'whether this is the intertrial calibration or not'
       },
       doVideo: {
         type: jsPsych.plugins.parameterType.BOOL,
@@ -342,7 +364,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
     function startWebgazer(callback) {
       if (trial.doInit) {
-       display_element.innerHTML = '<div> Before you begin the calibration, please wait until the video feed appears on your screen. <br></br> Follow the previous tips to adjust your position relative to your webcam. <br></br> When you are ready, please press the <b>SPACE BAR</b> to continue.</div>';
+        display_element.innerHTML = '<div> Before you begin the calibration, please wait until the video feed appears on your screen. <br></br> Follow the previous tips to adjust your position relative to your webcam. <br></br> When you are ready, please press the <b>SPACE BAR</b> to continue.</div>';
        //  Webcam is ready, please press the spacebar to continue
         //begin webgazer and also set up webgazer parameter
         webgazer.begin(function (err) {
@@ -420,27 +442,59 @@ jsPsych.plugins["eye-tracking"] = (function () {
 
   //optionalMessage(display_element, flag, callback)
 
-      startWebgazer(function(err) {
-      if (err) { console.log(err); return; }
-      startCalibration(function(calibrationData) {
-        optionalWait(trial.doCalibration && trial.doValidation, 1000, function() {
-          optionalMessage(display_element, trial.doCalibration && trial.doValidation, function(){
-          console.log('starting validation');
-          startValidation(function(validationData) {
-            var data = {
-              validationPoints: JSON.stringify( validationData.points),
-             // validationData.points,
-              accuracy: computeAccuracy(validationData.points),
-              //calibrationHistory: calibrationData.history,
-             // validationnHistory: validationData.history,
-            };
-            jsPsych.finishTrial(data);
-          });
-         });
-        })
-      });
+  //     startWebgazer(function(err) {
+  //     if (err) { console.log(err); return; }
+  //     startCalibration(function(calibrationData) {
+  //       optionalWait(trial.doCalibration && trial.doValidation, 1000, function() {
+  //         optionalMessage(display_element, trial.doCalibration && trial.doValidation, function(){
+  //         console.log('starting validation');
+  //         startValidation(function(validationData) {
+  //           var data = {
+  //             validationPoints: JSON.stringify( validationData.points),
+  //            // validationData.points,
+  //             accuracy: computeAccuracy(validationData.points),
+  //             //calibrationHistory: calibrationData.history,
+  //            // validationnHistory: validationData.history,
+  //           };
+  //           jsPsych.finishTrial(data);
+  //         });
+  //        });
+  //       })
+  //     });
+  //   });
+  // };
+
+
+  startWebgazer(function(err) {
+    if (err) {
+      console.log(err);
+      alert('Error: cannot start webgazer.\nIs webcam blocked? This app needs webcam.');
+      location.reload();
+      return;
+    }
+    optionalWait(trial.doCalibration && trial.IsInterTrial, 1000, function() {
+      optionalMessage_interTrial(display_element, trial.doCalibration && trial.IsInterTrial, function(){
+    startCalibration(function(calibrationData) {
+      optionalWait(trial.doCalibration && trial.doValidation, 1000, function() {
+        optionalMessage(display_element, trial.doCalibration && trial.doValidation, function(){
+        console.log('starting validation');
+        startValidation(function(validationData) {
+          var data = {
+            validationPoints: JSON.stringify( validationData.points),
+           // validationData.points,
+            accuracy: computeAccuracy(validationData.points),
+            //calibrationHistory: calibrationData.history,
+           // validationnHistory: validationData.history,
+          };
+          jsPsych.finishTrial(data);
+        });
+       });
+      })
     });
-  };
+  });
+ });
+});
+};
 
 
 

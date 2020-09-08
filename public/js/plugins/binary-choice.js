@@ -186,6 +186,7 @@ jsPsych.plugins["binary-choice"] = (function () {
     if(trial.doEyeTracking) {
       webgazer.resume();
     webgazer.showVideo(false);
+    webgazer.showPredictionPoints(false);
     webgazer.showFaceOverlay(false);
     webgazer.showFaceFeedbackBox(false);
     var starttime = performance.now();
@@ -208,7 +209,7 @@ jsPsych.plugins["binary-choice"] = (function () {
             'elapse-time': performance.now() - starttime
           });
         }
-      },50);
+      },20);
     }
 
     

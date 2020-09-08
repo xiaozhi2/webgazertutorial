@@ -1,8 +1,8 @@
 /**************/
 /** Constants */
 /**************/
-const nrating = 50;
-const nchoices = 70;
+const nrating = 75;
+const nchoices = 100;
 const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
@@ -50,26 +50,43 @@ var get_prac_images = function () {
 
 };
 
+
+
 var get_multichoice_images = function () {
-  var allcom = Combinatorics.combination(charity_choice_images, 2);
-  var allcom_zero = Combinatorics.combination(charity_choice_images_zero, 2);
-  var multi_choice_temp = []
-  var multi_choice_temp_zero = []
-  while (temp = allcom.next()) {
-    multi_choice_temp.push(jsPsych.randomization.shuffle(temp));
+  var multi_choice_temp = [];
+  for (var i = 0; i < 100; i++) {
+    sample = jsPsych.randomization.sampleWithoutReplacement(charity_choice_images_zero, 2);
+    multi_choice_temp.push(sample);
   }
-  while (temp = allcom_zero.next()) {
-    multi_choice_temp_zero.push(jsPsych.randomization.shuffle(temp));
-  }
-  if (multi_choice_temp.length < nchoices) {
-    if (multi_choice_temp_zero.length < nchoices) {
-      return utils.getRandomSample(multi_choice_temp_zero, multi_choice_temp_zero.length);
-    }
-    return utils.getRandomSample(multi_choice_temp_zero, nchoices);
-  } else {
-    return utils.getRandomSample(multi_choice_temp, nchoices);
-  }
-};
+  //console.log(multi_choice_temp);
+  return multi_choice_temp;
+}
+
+// var get_multichoice_images = function () {
+//   var allcom = Combinatorics.combination(charity_choice_images, 2);
+//   console.log(allcom);
+//   var allcom_zero = Combinatorics.combination(charity_choice_images_zero, 2);
+//   var multi_choice_temp = []
+//   var multi_choice_temp_zero = []
+//   while (temp = allcom.next()) {
+//     multi_choice_temp.push(jsPsych.randomization.shuffle(temp));
+//   }
+//   while (temp = allcom_zero.next()) {
+//     multi_choice_temp_zero.push(jsPsych.randomization.shuffle(temp));
+//   }
+//   if (multi_choice_temp.length < nchoices) {
+//     console.log(multi_choice_temp);
+//     console.log(multi_choice_temp_zero.length)
+//     //console.log(utils.getRandomSample(multi_choice_temp_zero, nchoices));
+//     if (multi_choice_temp_zero.length < nchoices) {
+//       randsamples= utils.getRandomSample(multi_choice_temp_zero, multi_choice_temp_zero.length);
+//       return 
+//     }
+//     return utils.getRandomSample(multi_choice_temp_zero, nchoices);
+//   } else {
+//     return utils.getRandomSample(multi_choice_temp, nchoices);
+//   }
+// };
 
 function makeSurveyCode(status) {
   uploadSubjectStatus(status);
@@ -87,7 +104,6 @@ function uploadSubjectStatus(status) {
 }
 
 
-//preassign a probability string
 
 /***********************/
 /******** Trials *******/
@@ -302,7 +318,7 @@ var ratings = {
   min: 0,
   max: 10,
   start: () => getRandomInt(0, 5),
-  require_movement: false,
+  require_movement: true,
   // prompt: '<p>Willingness to donate.</p>',
   slider_width: 500,
   response_ends_trial: true,
@@ -502,7 +518,7 @@ var fixation = {
 var if_node1 = {
   timeline: [fixation],
   conditional_function: function(){
-      if(Math.round(charity_choice_count%5) == 0){
+      if(Math.round(charity_choice_count%10) == 0){
           return true;
       } else {
           return false;
@@ -514,7 +530,7 @@ var if_node1 = {
 var if_node2 = {
   timeline: [fixation1],
   conditional_function: function(){
-      if(Math.round(charity_choice_count%5) != 0){
+      if(Math.round(charity_choice_count%10) != 0){
           return true;
       } else {
           return false;
@@ -532,6 +548,9 @@ var charity_choice1 = {
     if_node2,
     {
       type: "binary-choice",
+      on_start: function() {
+        //console.log(charity_real_pairs)
+      },
       stimulus: () =>   charity_real_pairs[charity_choice_count],
       choices: ["F", "J"],
       on_finish: () => charity_choice_count++,
