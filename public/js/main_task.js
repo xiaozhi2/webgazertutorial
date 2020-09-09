@@ -7,7 +7,7 @@ const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
 const debugModeCaliDot = 1;
-const realCaliDot = 1;
+const realCaliDot = 12;
 
 
 var subject_id = jsPsych.randomization.randomID(7);
@@ -76,29 +76,7 @@ var get_multichoice_images = function () {
   return randsamples
 }
 
-// var get_multichoice_images = function () {
-//    var allcom = Combinatorics.combination(charity_choice_images, 2);
-//    var allcom_zero = Combinatorics.combination(charity_choice_images_zero, 2);
-//    var multi_choice_temp = []
-//    var multi_choice_temp_zero = []
-//    while (temp = allcom.next()) {
-//      multi_choice_temp.push(jsPsych.randomization.shuffle(temp));
-//     }
-//     while (temp = allcom_zero.next()) {
-//       multi_choice_temp_zero.push(jsPsych.randomization.shuffle(temp));
-//     }
-//     if (multi_choice_temp.length < nchoices) {
-//       console.log(multi_choice_temp_zero.length)
-//       console.log(utils.getRandomSample(multi_choice_temp_zero, nchoices));
-//       if (multi_choice_temp_zero.length < nchoices) {
-//         randsamples= utils.getRandomSample(multi_choice_temp_zero, multi_choice_temp_zero.length);
-//         return 
-//       }
-//       return utils.getRandomSample(multi_choice_temp_zero, nchoices);
-//     } else {
-//       return utils.getRandomSample(multi_choice_temp, nchoices);
-//     }
-// };
+
 
 function makeSurveyCode(status) {
   uploadSubjectStatus(status);
