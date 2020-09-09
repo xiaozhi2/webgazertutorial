@@ -6,10 +6,38 @@ const utilsHelper = ( function () {
    
   utils.getRandom = (length) => Math.floor(Math.random()*(length));
 
-  utils.getRandomSample = function(array, size){
+  // utils.getRandomSample = function(array, size){
+  //       var length = array.length, start = utils.getRandom(length),
+  //           swaps = [], i = size, temp;
+      
+  //       while(i--) {
+  //           var index = (start + i)%length, rindex = utils.getRandom(length);
+  //           temp = array[rindex];
+  //           array[rindex] = array[index];
+  //           array[index] = temp;
+  //           swaps.push({ from: index, to: rindex });
+  //       }
+      
+  //       var end = start + size, sample = array.slice(start, end);
+  //       if(end > length)
+  //           sample = sample.concat(array.slice(0, end - length));
+      
+  //       // Put everything back.
+  //       i = size;
+  //       while(i--) {
+  //            var pop = swaps.pop();
+  //            temp = array[pop.from];
+  //            array[pop.from] = array[pop.to];
+  //            array[pop.to] = temp;
+  //       }
+      
+  //       return sample;
+  //     };
+
+  utils.getRandomSample = function(array, size) {
         var length = array.length, start = utils.getRandom(length),
             swaps = [], i = size, temp;
-      
+    
         while(i--) {
             var index = (start + i)%length, rindex = utils.getRandom(length);
             temp = array[rindex];
@@ -17,11 +45,11 @@ const utilsHelper = ( function () {
             array[index] = temp;
             swaps.push({ from: index, to: rindex });
         }
-      
+    
         var end = start + size, sample = array.slice(start, end);
         if(end > length)
             sample = sample.concat(array.slice(0, end - length));
-      
+    
         // Put everything back.
         i = size;
         while(i--) {
@@ -30,9 +58,9 @@ const utilsHelper = ( function () {
              array[pop.from] = array[pop.to];
              array[pop.to] = temp;
         }
-      
+    
         return sample;
-      };
+    }
 
       utils.shuffle = function(array) {
         var currentIndex = array.length,

@@ -7,7 +7,7 @@ const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
 const debugModeCaliDot = 1;
-const realCaliDot = 12;
+const realCaliDot = 1;
 
 
 var subject_id = jsPsych.randomization.randomID(7);
@@ -52,40 +52,52 @@ var get_prac_images = function () {
 
 
 
+//  var get_multichoice_images = function () {
+//      var multi_choice_temp = [];
+//      for (var i = 0; i < 100; i++) {
+//        sample = jsPsych.randomization.sampleWithoutReplacement(charity_choice_images_zero, 2);
+//        multi_choice_temp.push(sample);
+//       }
+//       console.log(multi_choice_temp);
+//       return multi_choice_temp;
+//     }
+
+// var exp_images = [];
+// for (var i = 0; i < 100; i++) {
+//   exp_images.push('../img/FoodImages/foodStimulus_' + i + '.jpg');
+// }
+
+const combinations = ([head, ...tail]) => tail.length > 0 ? [...tail.map(tailValue => [head, tailValue]), ...combinations(tail)] : []
 var get_multichoice_images = function () {
-  var multi_choice_temp = [];
-  for (var i = 0; i < 100; i++) {
-    sample = jsPsych.randomization.sampleWithoutReplacement(charity_choice_images_zero, 2);
-    multi_choice_temp.push(sample);
-  }
-  //console.log(multi_choice_temp);
-  return multi_choice_temp;
+  multi_choice_temp = combinations(charity_choice_images_zero);
+  shuffled_multi_choice_temp = jsPsych.randomization.repeat(multi_choice_temp, 1);
+  randsamples = jsPsych.randomization.sampleWithoutReplacement(shuffled_multi_choice_temp, 100);
+  console.log(randsamples)
+  return randsamples
 }
 
 // var get_multichoice_images = function () {
-//   var allcom = Combinatorics.combination(charity_choice_images, 2);
-//   console.log(allcom);
-//   var allcom_zero = Combinatorics.combination(charity_choice_images_zero, 2);
-//   var multi_choice_temp = []
-//   var multi_choice_temp_zero = []
-//   while (temp = allcom.next()) {
-//     multi_choice_temp.push(jsPsych.randomization.shuffle(temp));
-//   }
-//   while (temp = allcom_zero.next()) {
-//     multi_choice_temp_zero.push(jsPsych.randomization.shuffle(temp));
-//   }
-//   if (multi_choice_temp.length < nchoices) {
-//     console.log(multi_choice_temp);
-//     console.log(multi_choice_temp_zero.length)
-//     //console.log(utils.getRandomSample(multi_choice_temp_zero, nchoices));
-//     if (multi_choice_temp_zero.length < nchoices) {
-//       randsamples= utils.getRandomSample(multi_choice_temp_zero, multi_choice_temp_zero.length);
-//       return 
+//    var allcom = Combinatorics.combination(charity_choice_images, 2);
+//    var allcom_zero = Combinatorics.combination(charity_choice_images_zero, 2);
+//    var multi_choice_temp = []
+//    var multi_choice_temp_zero = []
+//    while (temp = allcom.next()) {
+//      multi_choice_temp.push(jsPsych.randomization.shuffle(temp));
 //     }
-//     return utils.getRandomSample(multi_choice_temp_zero, nchoices);
-//   } else {
-//     return utils.getRandomSample(multi_choice_temp, nchoices);
-//   }
+//     while (temp = allcom_zero.next()) {
+//       multi_choice_temp_zero.push(jsPsych.randomization.shuffle(temp));
+//     }
+//     if (multi_choice_temp.length < nchoices) {
+//       console.log(multi_choice_temp_zero.length)
+//       console.log(utils.getRandomSample(multi_choice_temp_zero, nchoices));
+//       if (multi_choice_temp_zero.length < nchoices) {
+//         randsamples= utils.getRandomSample(multi_choice_temp_zero, multi_choice_temp_zero.length);
+//         return 
+//       }
+//       return utils.getRandomSample(multi_choice_temp_zero, nchoices);
+//     } else {
+//       return utils.getRandomSample(multi_choice_temp, nchoices);
+//     }
 // };
 
 function makeSurveyCode(status) {
@@ -311,6 +323,8 @@ function getRandomInt(min, max) {
 ratings_images = jsPsych.randomization.shuffle(exp_images);
 var ratings = {
   type: 'image-slider-response',
+  stimulus_height: 320,
+  stimulus_width: 450,
   timeline: ratings_images.map(img => ({
     stimulus: img
   })),
