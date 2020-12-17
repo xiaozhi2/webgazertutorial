@@ -66,6 +66,28 @@ index.html file specifies the consent form for the experiment and launches your 
 Img folder contains the food image stimuli.
 
 
+## Operation
+
+- If you want to make this template work on your laptop, you should first go to https://www.dropbox.com/developers/apps to create an app and then replace your access token in the app.js file. You had better create a separate file to save your access token to protect the data. 
+
+```javascript
+const dbx = new Dropbox({
+    accessToken: 'YOURACCESSTOKEN',
+    fetch
+});
+```
+
+- Once you have your app set up in your dropbox, you can cd to your experiment folder: 
+
+```shell
+$ npm install
+$ node app.js
+```
+
+
+-  Next, you can go to your Chrome or Firefox browser and type in the port number (default is 2500) and begin the experiment.
+   - In your browser, type in : localhost:2500
+
 
 ## Webcam
 
@@ -350,26 +372,7 @@ webgazer.resume() // on_start function of the recalibration trial in the main ta
    
    
 
-## Operation
 
-- If you want to make this template work on your laptop, you should first go to https://www.dropbox.com/developers/apps to create an app and then replace your access token in the app.js file. You had better create a separate file to save your access token to protect the data. 
-
-```javascript
-const dbx = new Dropbox({
-    accessToken: 'YOURACCESSTOKEN',
-    fetch
-});
-```
-
-- Once you have your app set up in your dropbox, you can cd to your experiment folder: 
-
-```shell
-$ npm install
-$ node app.js
-```
-
-
--  Next, you can go to your Chrome or Firefox browser and type in the port number (default is 2000) and begin the experiment.
 
 
 ## Others
