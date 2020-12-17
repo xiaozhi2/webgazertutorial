@@ -1,13 +1,12 @@
 /**************/
 /** Constants */
 /**************/
-const nrating = 75;
-const nchoices = 100;
+const nrating = 3;
+const nchoices = 1;
 const fixation_duration = 500;
 const nprac = 3;
 const nImageInst = 2;
-const debugModeCaliDot = 1;
-const realCaliDot = 12;
+const realCaliDot = 1;
 
 
 var subject_id = jsPsych.randomization.randomID(7);
@@ -50,22 +49,6 @@ var get_prac_images = function () {
 
 };
 
-
-
-//  var get_multichoice_images = function () {
-//      var multi_choice_temp = [];
-//      for (var i = 0; i < 100; i++) {
-//        sample = jsPsych.randomization.sampleWithoutReplacement(charity_choice_images_zero, 2);
-//        multi_choice_temp.push(sample);
-//       }
-//       console.log(multi_choice_temp);
-//       return multi_choice_temp;
-//     }
-
-// var exp_images = [];
-// for (var i = 0; i < 100; i++) {
-//   exp_images.push('../img/FoodImages/foodStimulus_' + i + '.jpg');
-// }
 
 const combinations = ([head, ...tail]) => tail.length > 0 ? [...tail.map(tailValue => [head, tailValue]), ...combinations(tail)] : []
 var get_multichoice_images = function () {
@@ -223,10 +206,10 @@ var inital_eye_calibration = {
       doInit: () => init_flag(),
       doCalibration: true,
       doValidation: true,
-      calibrationDots:  realCaliDot , // change to 12
-      calibrationDuration: 3, //change to 5
+      calibrationDots:  realCaliDot , 
+      calibrationDuration: 3, 
       doValidation: true,
-      validationDots:  realCaliDot , //change to 12
+      validationDots:  realCaliDot , 
       validationDuration: 2,
       validationTol: validationTols[calibrationAttempt],
       // showPoint: true,
@@ -271,10 +254,10 @@ var experimentOverview = {
 }
 
 
-/** image slide show */
 
 
-/** willingness to donate rating */
+
+/** rating */
 
 var ratingOverview = {
   type: 'html-keyboard-response',
@@ -364,10 +347,10 @@ var recalibration = {
     {
       type: "eye-tracking",
       doCalibration: true,
-      calibrationDots: realCaliDot, // change to 12
+      calibrationDots: realCaliDot,
       calibrationDuration: 3,
       doValidation: true,
-      validationDots: realCaliDot,// change to 12
+      validationDots: realCaliDot,
       validationDuration: 2,
       validationTol: 200
     }
@@ -451,6 +434,8 @@ var binary_choice_states = {
 var validate_counter = 0;
 validationAccuracy = 0.6;
 
+///binary_choice_state_logger and 
+//binary_state_updater is used for triggering the recalibration during the choice task
 function binary_choice_state_logger(finish_data_accuracy) {
   // ...TODO
   if (finish_data_accuracy >= validationAccuracy) {
@@ -490,9 +475,9 @@ var binary_state_updater = function () {
 var fixation = {
   type: "eye-tracking",
   doInit: false,
- // doCalibration: () => binary_state_updater().doCalibration,
+ // doCalibration: () => binary_state_updater().doCalibration,  //triggering the recalibration during the choice task
   doCalibration: false,
-  //calibrationDots: () => binary_state_updater().calibrationDots,
+  //calibrationDots: () => binary_state_updater().calibrationDots,  
  // doValidation: () => binary_state_updater().dovalidation,
   doValidation: true,
  // validationDots: () => binary_state_updater().validationDots,
@@ -703,7 +688,6 @@ var on_finish_callback = function () {
     browser_name: bowser.name,
     browser_type: bowser.version,
     subject: subject_id,
-    subject: subject_id,
     interaction: jsPsych.data.getInteractionData().json(),
     //quiz: quiz_correct_count,
     windowWidth: screen.width,
@@ -771,15 +755,15 @@ function startExperiment() {
 };
 
 
-function saveData() {
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
-  xhr.setRequestHeader('Content-Type', 'application/json');
-  xhr.onload = function () {
-    if (xhr.status == 200) {
-      var response = JSON.parse(xhr.responseText);
-      //   console.log(response.success);
-    }
-  };
-  xhr.send(jsPsych.data.get().json());
-}
+// function saveData() {
+//   var xhr = new XMLHttpRequest();
+//   xhr.open('POST', 'write_data.php'); // change 'write_data.php' to point to php script.
+//   xhr.setRequestHeader('Content-Type', 'application/json');
+//   xhr.onload = function () {
+//     if (xhr.status == 200) {
+//       var response = JSON.parse(xhr.responseText);
+//       //   console.log(response.success);
+//     }
+//   };
+//   xhr.send(jsPsych.data.get().json());
+// }

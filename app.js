@@ -12,34 +12,10 @@ const starttime = Date.now();
 const Dropbox = require("dropbox").Dropbox;
 const fetch = require("node-fetch");
 const body_parser = require("body-parser");
-//require("dotenv").config();
 
-//var config = require('./config.json');
-
-
-//var sdk = BoxSDK.getPreconfiguredInstance(config);
-//var client = sdk.getAppAuthClient('enterprise');
-
-
-// var sdk = new BoxSDK( {
-//     clientID: '6y1owyz4gjq33hvjhknvl3ny6x6y685j',
-//     clientSecret: 'FBbc8CMZKoj2wwcnw321txdZw3mSBc3V'
-// });
-
-// Create a basic API client, which does not automatically refresh the access token
-//var client = sdk.getBasicClient('JKfo9lWcymRSQVTVZcjm97eAybxHzvNr');
-
-//var folderID = '0';
-
-
-
-// var saveBox = function(content, filename) {
-//     client.files.uploadFile( folderID, filename,content)
-
-// };
 
 const dbx = new Dropbox({
-    accessToken: 'DNbcoilgmnsAAAAAAAAAAZuml-fTGBSNODuaPd-Dv7-27J5_AZsbXjTsA7d6l3kq',
+    accessToken: 'YOURACCESSTOKEN',
     fetch
 });
 
@@ -76,7 +52,7 @@ saveDropboxSingleFile = function (content, filename) {
 };
 
 
-app.set('port', (process.env.PORT || 2000));
+app.set('port', (process.env.PORT || 2500));
 
 // static
 app.use(express.static(__dirname + '/public'));
@@ -109,12 +85,10 @@ app.post("/subject-status", function (request, response) {
     saveDropboxSingleFile(JSON.stringify(subjects), `subject_status_${starttime}.json`)
     .then(() => console.log(`subjuct status recorded: ${subject_id},${status}`))
     .catch(err => console.log(err));
-    //saveDropboxSingleFile(JSON.stringify(subjects), `subject_status_${starttime}.json`);
-   // console.log(`subjuct status recorded: ${subject_id},${status}`);
 });
 
 
 //start the server
 app.listen(app.get('port'), function () {
-    console.log("listening to port");
+    console.log("listening to port :",(process.env.PORT || 2500));
 });

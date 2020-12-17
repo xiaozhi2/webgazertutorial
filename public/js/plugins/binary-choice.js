@@ -177,7 +177,6 @@ jsPsych.plugins["binary-choice"] = (function () {
         "eyeData": JSON.stringify(eyeData),
         "realtrial":  trial.realOrPrac
       };
-      // console.log(trial_data);
       jsPsych.finishTrial(trial_data);
     };
 
