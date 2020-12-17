@@ -15,7 +15,7 @@ In the Template operation section, we provide instructions regarding how to make
   - [Initial calibration](#Calibration)
   - [Eye tracking during the experiment](#Recording)
 - Server and data
-  - [Server side and data saving](#Server side and data saving)
+  - [Server side and data saving](#Server)
 - Other notes
   - [Others](#Others)
 
@@ -291,7 +291,7 @@ webgazer.resume() // on_start function of the recalibration trial in the main ta
            
 
 
-## Server side and data saving
+## Server
 - After coding an eye-tracking experiment, you have to build an experiment online and collect data. As we mentioned before, we packed our experiment into an node.js app, and then deploy the experiment on Heroku. https://www.heroku.com. We send our data to our dropbox account using the Dropbox API.
    - Helpful Links: https://blog.heroku.com/six-strategies-deploy-to-heroku
     - Heroku has its own data storage service that you can save your data. 
