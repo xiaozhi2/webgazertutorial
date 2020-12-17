@@ -9,14 +9,13 @@ In the Template operation section, we provide instructions regarding how to make
   - [Tracking eye positions in Webgazer](#Webgazer)
 - Introduction to the files in the Template 
   - [Template](#Template)
+  - [Run the template on your own device](#Operation)
 - Eye tracking experiment steps:
   - [Check webcam](#Webcam)
   - [Initial calibration](#Calibration)
   - [Eye tracking during the experiment](#Recording)
 - Server and data
   - [Server side and data saving](#Server side and data saving)
-- Run the template in your own device
-  - [Template operation](#Operation)
 - Other notes
   - [Others](#Others)
 
