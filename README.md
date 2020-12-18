@@ -88,6 +88,7 @@ $ node app.js
 -  Next, you can go to your Chrome or Firefox browser and type in the port number (default is 2500) and begin the experiment.
    - In your browser, type in : localhost:2500
 
+- The mp4 video shows the whole process of downloading from the github and operating on a new device. 
 
 ## Webcam
 
