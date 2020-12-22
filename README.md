@@ -3,7 +3,7 @@
 After a brief overview, we provided an introduction to the files in our template by specifying the purposes of the folders and files in the template.
 We then list the steps to make eye-tracking work during the experiment using the template we provided as an instance. 
 In the Template operation section, we provide instructions regarding how to make the template work on your own device.
-Please see our preprint here: https://psyarxiv.com/qhme6/! 
+Please check our preprint here: https://psyarxiv.com/qhme6/! 
 - Library introduction
   - [Prepare your experiment in jsPsych](#JsPysch)
   - [Tracking eye positions in Webgazer](#Webgazer)
