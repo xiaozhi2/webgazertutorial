@@ -48,7 +48,7 @@ jsPsych.plugins["eye-tracking"] = (function () {
   
 
   function vectorLength(x, y) {
-    return Math.sqrt(x*x, y*y);
+    return (Math.sqrt((x * x) + (y * y)));
   }
 
   function prepareReferencePoints(num) {
